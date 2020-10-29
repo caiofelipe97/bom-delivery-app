@@ -1,5 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useRef } from 'react';
+import { Alert, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
+import * as Yup from 'yup';
+
+import getValidationErrors from '../../utils/getValidationErrors';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
+
 import {
   Container,
   Title,
@@ -8,18 +17,73 @@ import {
   BackButtonText,
 } from './styles';
 
-import Input from '../../components/Input';
-import Button from '../../components/Button';
+interface EmailConfirmationProps {
+  email: string;
+}
 
 const EmailConfirmation: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
+
+  const handleEmailConfirmation = useCallback(
+    async (data: EmailConfirmationProps) => {
+      try {
+        formRef.current?.setErrors({});
+        console.log(data);
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+        });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+        Alert.alert(
+          'E-mail verificado!',
+          'Você já pode fazer o login na aplicação!',
+        );
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
+          return;
+        }
+        Alert.alert(
+          'Erro na verificacão do e-mail',
+          'Ocorreu um erro na verificacão do e-mail, tente novamente.',
+        );
+      }
+    },
+    [],
+  );
+
   return (
     <Container>
       <Title>Insira seu e-mail</Title>
-      <Input name="email" icon="mail" placeholder="E-mail" />
+      <Form ref={formRef} onSubmit={handleEmailConfirmation}>
+        <Input
+          autoCorrect={false}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          name="email"
+          icon="mail"
+          placeholder="E-mail"
+          returnKeyType="next"
+          onSubmitEditing={() => {
+            formRef.current?.submitForm();
+          }}
+        />
+      </Form>
       <InfoText>
         Toque em avançar para receber o link de confirmação por e-mail.
       </InfoText>
-      <Button>Avançar</Button>
+      <Button
+        onPress={() => {
+          Keyboard.dismiss();
+          formRef.current?.submitForm();
+        }}
+      >
+        Avançar
+      </Button>
       <BackButton>
         <Icon name="arrow-left" size={20} color="#78308c" />
 
