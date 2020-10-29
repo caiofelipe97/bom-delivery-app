@@ -47,7 +47,6 @@ export const TermsButton = styled.TouchableOpacity`
   left: 0;
   bottom: 0;
   right: 0;
-  border-color: #232129;
   padding: 16px 0 16px;
   display: flex;
   justify-content: center;

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image, StatusBar } from 'react-native';
 
+import { useNavigation } from '@react-navigation/native';
 import {
   Container,
   Background,
@@ -15,6 +16,8 @@ import logoImg from '../../assets/logo.png';
 import Button from '../../components/Button';
 
 const SignIn: React.FC = () => {
+  const navigation = useNavigation();
+
   return (
     <>
       <StatusBar
@@ -36,9 +39,7 @@ const SignIn: React.FC = () => {
           </FacebookButton>
           <Button
             style={{ marginTop: 32 }}
-            onPress={() => {
-              console.log('Login Email');
-            }}
+            onPress={() => navigation.navigate('EmailConfirmation')}
           >
             ENTRAR COM E-MAIL
           </Button>
