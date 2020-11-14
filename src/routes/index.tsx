@@ -5,6 +5,7 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import CellphoneConfirmation from '../pages/CellphoneConfirmation';
 import EmailConfirmation from '../pages/EmailConfirmation';
+import EmailCodeValidation from '../pages/EmailCodeValidation';
 
 const Auth = createStackNavigator();
 
@@ -22,6 +23,11 @@ const AuthRoutes: React.FC = () => (
       component={CellphoneConfirmation}
     />
     <Auth.Screen name="EmailConfirmation" component={EmailConfirmation} />
+    <Auth.Screen
+      name="EmailCodeValidation"
+      component={EmailCodeValidation}
+      initialParams={{ email: '' }}
+    />
   </Auth.Navigator>
 );
 
