@@ -4,6 +4,7 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from 'react';
+
 import { TextInputProps } from 'react-native';
 import { useField } from '@unform/core';
 
@@ -28,7 +29,7 @@ const SquareInput: React.RefForwardingComponent<InputRef, InputProps> = (
 ) => {
   const inputElementRef = useRef<any>(null);
 
-  const { registerField, defaultValue = '', fieldName } = useField(name);
+  const { registerField, defaultValue = '', fieldName, error } = useField(name);
   const inputValueRef = useRef<InputValueReference>({ value: defaultValue });
 
   useImperativeHandle(ref, () => ({
@@ -42,7 +43,7 @@ const SquareInput: React.RefForwardingComponent<InputRef, InputProps> = (
       name: fieldName,
       ref: inputValueRef.current,
       path: 'value',
-      setValue(ref: any, value: string) {
+      setValue(_ref: any, value: string) {
         inputValueRef.current.value = value;
         inputElementRef.current.setNativeProps({ text: value });
       },
@@ -54,8 +55,9 @@ const SquareInput: React.RefForwardingComponent<InputRef, InputProps> = (
   }, [fieldName, registerField]);
 
   return (
-    <Container style={containerStyle}>
+    <Container style={containerStyle} isErrored={!!error}>
       <TextInput
+        maxLength={1}
         ref={inputElementRef}
         keyboardAppearance="dark"
         keyboardType="number-pad"

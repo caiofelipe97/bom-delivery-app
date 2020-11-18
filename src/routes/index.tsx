@@ -3,9 +3,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
-import CellphoneConfirmation from '../pages/CellphoneConfirmation';
+import CellphoneConfirmation from '../pages/PhoneNumberConfirmation';
 import EmailConfirmation from '../pages/EmailConfirmation';
 import EmailCodeValidation from '../pages/EmailCodeValidation';
+import PhoneNumberConfirmation from '../pages/PhoneNumberConfirmation';
 
 const Auth = createStackNavigator();
 
@@ -23,10 +24,10 @@ const AuthRoutes: React.FC = () => (
       component={CellphoneConfirmation}
     />
     <Auth.Screen name="EmailConfirmation" component={EmailConfirmation} />
+    <Auth.Screen name="EmailCodeValidation" component={EmailCodeValidation} />
     <Auth.Screen
-      name="EmailCodeValidation"
-      component={EmailCodeValidation}
-      initialParams={{ email: '' }}
+      name="PhoneNumberConfirmation"
+      component={PhoneNumberConfirmation}
     />
   </Auth.Navigator>
 );
