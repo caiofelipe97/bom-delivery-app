@@ -33,7 +33,7 @@ const EmailConfirmation: React.FC = () => {
     async (data: EmailConfirmationProps) => {
       try {
         formRef.current?.setErrors({});
-        console.log(data);
+
         const schema = Yup.object().shape({
           email: Yup.string()
             .required('E-mail obrigatório')
@@ -45,12 +45,6 @@ const EmailConfirmation: React.FC = () => {
 
         await api.post('email-confirmations', data);
         navigation.navigate('EmailCodeValidation', { email: data.email });
-        /*
-        Alert.alert(
-          'E-mail verificado!',
-          'Você já pode fazer o login na aplicação!',
-        );
-        */
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -63,7 +57,7 @@ const EmailConfirmation: React.FC = () => {
         );
       }
     },
-    [],
+    [navigation],
   );
 
   return (
@@ -77,7 +71,7 @@ const EmailConfirmation: React.FC = () => {
           name="email"
           icon="mail"
           placeholder="E-mail"
-          returnKeyType="next"
+          returnKeyType="send"
           onSubmitEditing={() => {
             formRef.current?.submitForm();
           }}

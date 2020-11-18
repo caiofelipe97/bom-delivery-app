@@ -1,8 +1,26 @@
 import React from 'react';
-import { Container } from './styles';
+import { StatusBar, Image } from 'react-native';
+import { Container, Background, Content, Title } from './styles';
+import nameImg from '../../assets/name.png';
 
 const SignUp: React.FC = () => {
-  return <Container />;
+  return (
+    <>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="#78308C"
+      />
+      <Container>
+        <Background>
+          <Image source={nameImg} />
+        </Background>
+        <Content>
+          <Title>Crie sua conta</Title>
+        </Content>
+      </Container>
+    </>
+  );
 };
 
 export default SignUp;

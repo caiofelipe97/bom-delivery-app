@@ -7,6 +7,7 @@ import CellphoneConfirmation from '../pages/PhoneNumberConfirmation';
 import EmailConfirmation from '../pages/EmailConfirmation';
 import EmailCodeValidation from '../pages/EmailCodeValidation';
 import PhoneNumberConfirmation from '../pages/PhoneNumberConfirmation';
+import PhoneNumberValidation from '../pages/PhoneNumberValidation';
 
 const Auth = createStackNavigator();
 
@@ -17,8 +18,9 @@ const AuthRoutes: React.FC = () => (
       cardStyle: { backgroundColor: '#F6F2F8' },
     }}
   >
-    <Auth.Screen name="SignIn" component={SignIn} />
     <Auth.Screen name="SignUp" component={SignUp} />
+
+    <Auth.Screen name="SignIn" component={SignIn} />
     <Auth.Screen
       name="CellphoneConfirmation"
       component={CellphoneConfirmation}
@@ -28,6 +30,10 @@ const AuthRoutes: React.FC = () => (
     <Auth.Screen
       name="PhoneNumberConfirmation"
       component={PhoneNumberConfirmation}
+    />
+    <Auth.Screen
+      name="PhoneNumberValidation"
+      component={PhoneNumberValidation}
     />
   </Auth.Navigator>
 );
