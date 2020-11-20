@@ -8,6 +8,8 @@ export const Container = styled.View`
 `;
 
 export const Background = styled.View`
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 20%;
   align-items: center;
@@ -19,6 +21,7 @@ export const Background = styled.View`
 `;
 
 export const Content = styled.View`
+  bottom: ${Platform.OS === 'android' ? 64 : 32}px;
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -29,5 +32,5 @@ export const Title = styled.Text`
   font-size: 20px;
   color: #78308c;
   font-family: 'RobotoSlab-Medium';
-  margin: 64px 0 24px;
+  margin: 12px 0 24px;
 `;
