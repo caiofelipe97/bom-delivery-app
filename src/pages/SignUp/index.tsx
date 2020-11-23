@@ -1,28 +1,100 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Image, StatusBar, TextInput } from 'react-native';
+import { Alert, Image, StatusBar, TextInput } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
+import * as Yup from 'yup';
+
 import { Container, Background, Content, Title } from './styles';
+
+import { useAuth } from '../../hooks/auth';
 import nameImg from '../../assets/name.png';
 import Input from '../../components/Input';
+import InputMask from '../../components/InputMask';
 import Button from '../../components/Button';
+import getValidationErrors from '../../utils/getValidationErrors';
+import api from '../../services/api';
+import { User } from '../../types';
 
 interface RouteParams {
   email: string;
   phoneNumber: string;
 }
 
+interface SignUpFormData {
+  name: string;
+  secondName: string;
+  birthDate: string;
+}
+
+interface Response {
+  token: string;
+  user: User;
+}
+
 const SignUp: React.FC = () => {
   const { params } = useRoute();
+  const { signInWithCustomToken } = useAuth();
 
   const formRef = useRef<FormHandles>(null);
   const secondNameInputRef = useRef<TextInput>(null);
-  const birthdayInputRef = useRef<TextInput>(null);
+  const birthDateInputRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback(async () => {
-    console.log('signUp');
+  const handleSignUp = useCallback(async (data: SignUpFormData) => {
+    try {
+      const { email, phoneNumber } = params as RouteParams;
+
+      formRef.current?.setErrors({});
+
+      const schema = Yup.object().shape({
+        name: Yup.string()
+          .min(2, 'O nome deve ter no mínimo 2 caracteres.')
+          .required('Nome é obrigatório'),
+        secondName: Yup.string()
+          .min(2, 'O sobrenome deve ter no mínimo 2 caracteres.')
+          .required('Sobrenome é obrigatório'),
+        birthDate: Yup.string()
+          .length(10, 'A data de aniverário é inválida')
+          .required('Data de aniversário é obrigatória'),
+      });
+
+      const dateParts = data.birthDate.split('/');
+      const birthDateEdited = new Date(
+        parseInt(dateParts[2], 10),
+        parseInt(dateParts[1], 10) - 1,
+        parseInt(dateParts[0], 10),
+        12,
+      );
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      const fullName = `${data.name} ${data.secondName}`;
+
+      const response = await api.post<Response>('users', {
+        name: fullName,
+        birthDate: birthDateEdited,
+        email,
+        phoneNumber,
+      });
+      console.log(response.data);
+
+      const { token, user } = response.data;
+      await signInWithCustomToken({ token });
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(err);
+        formRef.current?.setErrors(errors);
+        return;
+      }
+      if (err.response) {
+        Alert.alert('Erro no cadastro do usuário', err.response.data?.message);
+      } else {
+        Alert.alert('Erro no cadastro do usuário', 'Tente novamente');
+      }
+    }
   }, []);
   return (
     <>
@@ -62,13 +134,17 @@ const SignUp: React.FC = () => {
               placeholder="Sobrenome"
               returnKeyType="next"
               onSubmitEditing={() => {
-                birthdayInputRef.current?.focus();
+                birthDateInputRef.current?.focus();
               }}
             />
-            <Input
-              ref={secondNameInputRef}
+            <InputMask
+              ref={birthDateInputRef}
               containerStyle={{ marginBottom: 12 }}
-              name="birthday"
+              type="datetime"
+              options={{
+                format: 'DD/MM/YYYY',
+              }}
+              name="birthDate"
               icon="gift"
               placeholder="Data de nascimento"
               returnKeyType="send"

@@ -18,8 +18,6 @@ const AuthRoutes: React.FC = () => (
       cardStyle: { backgroundColor: '#F6F2F8' },
     }}
   >
-    <Auth.Screen name="SignUp" component={SignUp} />
-
     <Auth.Screen name="SignIn" component={SignIn} />
     <Auth.Screen
       name="CellphoneConfirmation"
@@ -35,6 +33,7 @@ const AuthRoutes: React.FC = () => (
       name="PhoneNumberValidation"
       component={PhoneNumberValidation}
     />
+    <Auth.Screen name="SignUp" component={SignUp} />
   </Auth.Navigator>
 );
 
