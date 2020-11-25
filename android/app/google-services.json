@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "92000871135",
+    "firebase_url": "https://bom-delivery.firebaseio.com",
+    "project_id": "bom-delivery",
+    "storage_bucket": "bom-delivery.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92000871135:android:86b071002153b4299dbf6a",
+        "android_client_info": {
+          "package_name": "com.bomdeliveryapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "92000871135-afqq0englrefrof931qvbo4td2860oks.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bomdeliveryapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "92000871135-vo1dljemo1tse686hitth97h5mq80vqm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtEkNUnkbFXMlhhamVOPgPZGm_0PtpEFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "92000871135-vo1dljemo1tse686hitth97h5mq80vqm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
