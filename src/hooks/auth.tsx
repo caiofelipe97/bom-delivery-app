@@ -6,6 +6,9 @@ import React, {
   useEffect,
 } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 import { useRoute } from '@react-navigation/native';
 import api from '../services/api';
 import { User } from '../types';
@@ -19,7 +22,8 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
-  user: User;
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   signInWithCustomToken(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
   loading: boolean;
@@ -28,62 +32,50 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
-  const [data, setData] = useState<AuthState>({} as AuthState);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadStorageData(): Promise<void> {
-      /*
-      const [token, user] = await AsyncStorage.multiGet([
-        '@BomDelivery:token',
-        '@BomDelivery:user',
-      ]);
-
-      setLoading(false);
-      */
+    async function onAuthStateChanged(
+      firebaseUser: FirebaseAuthTypes.User | null,
+    ): Promise<void> {
+      if (firebaseUser) {
+        const firestoreResponse = await firestore()
+          .collection<User>('users')
+          .doc(firebaseUser.uid)
+          .get();
+        const firestoreUser = firestoreResponse.data();
+        if (firestoreUser) {
+          setUser(firestoreUser);
+        }
+        setLoading(false);
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
     }
-    loadStorageData();
+    auth().onAuthStateChanged(onAuthStateChanged);
   }, []);
 
   const signInWithCustomToken = useCallback(async ({ token }) => {
-    /*
-    const response = await api.post('sessions', {
-      email,
-      password,
-    });
-    const { token, user } = response.data;
-
-    await AsyncStorage.multiSet([
-      ['@GoBarber:token', token],
-      ['@GoBarber:user', JSON.stringify(user)],
-    ]);
-
-    api.defaults.headers.authorization = `Bearer ${token}`;
-
-    setData({ token, user });
-    */
+    try {
+      await auth().signInWithCustomToken(token);
+    } catch (err) {
+      console.log(`Erro ao autenticar o usuário ${err}`);
+    }
   }, []);
 
-  /*
   const signOut = useCallback(async () => {
-    await AsyncStorage.multiRemove(['@GoBarber:token', '@GoBarber:user']);
-    setData({} as AuthState);
+    try {
+      await auth().signOut();
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
-  const updateUser = useCallback(
-    async (user: User) => {
-      await AsyncStorage.setItem('@GoBarber:user', JSON.stringify(user));
-      setData({
-        token: data.token,
-        user,
-      });
-    },
-    [data.token],
-  );
-  */
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signInWithCustomToken, loading }}
+      value={{ user, setUser, signInWithCustomToken, signOut, loading }}
     >
       {children}
     </AuthContext.Provider>

@@ -30,11 +30,11 @@ interface SignUpFormData {
 
 interface Response {
   token: string;
-  user: User;
 }
 
 const SignUp: React.FC = () => {
   const { params } = useRoute();
+  const { email, phoneNumber } = params as RouteParams;
   const { signInWithCustomToken } = useAuth();
 
   const formRef = useRef<FormHandles>(null);
@@ -43,8 +43,6 @@ const SignUp: React.FC = () => {
 
   const handleSignUp = useCallback(async (data: SignUpFormData) => {
     try {
-      const { email, phoneNumber } = params as RouteParams;
-
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
@@ -79,9 +77,7 @@ const SignUp: React.FC = () => {
         email,
         phoneNumber,
       });
-      console.log(response.data);
-
-      const { token, user } = response.data;
+      const { token } = response.data;
       await signInWithCustomToken({ token });
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
@@ -154,7 +150,7 @@ const SignUp: React.FC = () => {
               name="email"
               containerStyle={{ marginBottom: 12 }}
               icon="mail"
-              value="caiofelipee17@gmail.com"
+              value={email}
               editable={false}
               selectTextOnFocus={false}
             />
@@ -162,7 +158,7 @@ const SignUp: React.FC = () => {
               name="phoneNumber"
               containerStyle={{ marginBottom: 12 }}
               icon="phone"
-              value="83999799173"
+              value={phoneNumber}
               editable={false}
               selectTextOnFocus={false}
             />
