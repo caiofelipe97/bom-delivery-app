@@ -70,12 +70,13 @@ const SignUp: React.FC = () => {
       });
 
       const fullName = `${data.name} ${data.secondName}`;
+      const phoneNumberRawValue = phoneNumber.replace(/\D/g, '');
 
       const response = await api.post<Response>('users', {
         name: fullName,
         birthDate: birthDateEdited,
         email,
-        phoneNumber,
+        phoneNumber: phoneNumberRawValue,
       });
       const { token } = response.data;
       await signInWithCustomToken({ token });

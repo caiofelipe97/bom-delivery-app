@@ -16,7 +16,6 @@ import logoImg from '../../assets/logo.png';
 import Button from '../../components/Button';
 
 const SignIn: React.FC = () => {
-  console.log('SignIn!');
   const navigation = useNavigation();
 
   return (
