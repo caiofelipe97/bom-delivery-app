@@ -83,7 +83,7 @@ const EmailCodeValidation: React.FC = () => {
         }
       }
     },
-    [email, navigation],
+    [email, navigation, signInWithCustomToken],
   );
 
   return (

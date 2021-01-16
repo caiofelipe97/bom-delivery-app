@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Image, StatusBar } from 'react-native';
-
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../../hooks/auth';
+
 import {
   Container,
   Background,
@@ -17,6 +18,25 @@ import Button from '../../components/Button';
 
 const SignIn: React.FC = () => {
   const navigation = useNavigation();
+  const { fbLogin, user, facebookUser } = useAuth();
+
+  useEffect(() => {
+    if (!user && facebookUser) {
+      navigation.navigate('PhoneNumberConfirmation', {
+        email: facebookUser.email,
+      });
+    }
+  }, [user, facebookUser, navigation]);
+
+  const handleLoginWithFacebook = useCallback(() => {
+    if (facebookUser) {
+      navigation.navigate('PhoneNumberConfirmation', {
+        email: facebookUser.email,
+      });
+    } else {
+      fbLogin();
+    }
+  }, [facebookUser, fbLogin, navigation]);
 
   return (
     <>
@@ -30,11 +50,7 @@ const SignIn: React.FC = () => {
           <Image source={logoImg} />
         </Background>
         <Content>
-          <FacebookButton
-            onPress={() => {
-              console.log('Login Facebbok');
-            }}
-          >
+          <FacebookButton onPress={handleLoginWithFacebook}>
             <FacebookButtonText>ENTRAR COM FACEBOOK</FacebookButtonText>
           </FacebookButton>
           <Button

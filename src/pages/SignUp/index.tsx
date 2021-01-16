@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Alert, Image, StatusBar, TextInput } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -35,64 +35,93 @@ interface Response {
 const SignUp: React.FC = () => {
   const { params } = useRoute();
   const { email, phoneNumber } = params as RouteParams;
-  const { signInWithCustomToken } = useAuth();
+  const { facebookUser, signInWithCustomToken, signInFacebookUser } = useAuth();
 
   const formRef = useRef<FormHandles>(null);
   const secondNameInputRef = useRef<TextInput>(null);
   const birthDateInputRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
+        console.log(data);
+        const schema = Yup.object().shape({
+          name: Yup.string()
+            .min(2, 'O nome deve ter no mínimo 2 caracteres.')
+            .required('Nome é obrigatório'),
+          secondName: Yup.string()
+            .min(2, 'O sobrenome deve ter no mínimo 2 caracteres.')
+            .required('Sobrenome é obrigatório'),
+          birthDate: Yup.string()
+            .length(10, 'A data de aniverário é inválida')
+            .required('Data de aniversário é obrigatória'),
+        });
 
-      const schema = Yup.object().shape({
-        name: Yup.string()
-          .min(2, 'O nome deve ter no mínimo 2 caracteres.')
-          .required('Nome é obrigatório'),
-        secondName: Yup.string()
-          .min(2, 'O sobrenome deve ter no mínimo 2 caracteres.')
-          .required('Sobrenome é obrigatório'),
-        birthDate: Yup.string()
-          .length(10, 'A data de aniverário é inválida')
-          .required('Data de aniversário é obrigatória'),
-      });
+        const dateParts = data.birthDate.split('/');
+        const birthDateEdited = new Date(
+          parseInt(dateParts[2], 10),
+          parseInt(dateParts[1], 10) - 1,
+          parseInt(dateParts[0], 10),
+          12,
+        );
 
-      const dateParts = data.birthDate.split('/');
-      const birthDateEdited = new Date(
-        parseInt(dateParts[2], 10),
-        parseInt(dateParts[1], 10) - 1,
-        parseInt(dateParts[0], 10),
-        12,
-      );
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        const fullName = `${data.name} ${data.secondName}`;
+        const phoneNumberRawValue = phoneNumber.replace(/\D/g, '');
 
-      const fullName = `${data.name} ${data.secondName}`;
-      const phoneNumberRawValue = phoneNumber.replace(/\D/g, '');
-
-      const response = await api.post<Response>('users', {
-        name: fullName,
-        birthDate: birthDateEdited,
-        email,
-        phoneNumber: phoneNumberRawValue,
-      });
-      const { token } = response.data;
-      await signInWithCustomToken({ token });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
-        formRef.current?.setErrors(errors);
-        return;
+        const response = await api.post<Response>('users', {
+          name: fullName,
+          birthDate: birthDateEdited,
+          email,
+          phoneNumber: phoneNumberRawValue,
+          facebookLogin: !!facebookUser,
+        });
+        const { token } = response.data;
+        if (token && !!facebookUser) {
+          signInFacebookUser();
+        } else {
+          await signInWithCustomToken({ token });
+        }
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
+          return;
+        }
+        if (err.response) {
+          Alert.alert(
+            'Erro no cadastro do usuário',
+            err.response.data?.message,
+          );
+        } else {
+          Alert.alert('Erro no cadastro do usuário', 'Tente novamente');
+        }
       }
-      if (err.response) {
-        Alert.alert('Erro no cadastro do usuário', err.response.data?.message);
-      } else {
-        Alert.alert('Erro no cadastro do usuário', 'Tente novamente');
+    },
+    [
+      email,
+      facebookUser,
+      phoneNumber,
+      signInFacebookUser,
+      signInWithCustomToken,
+    ],
+  );
+
+  const firstAndSecondFacebookName = useMemo(() => {
+    if (facebookUser) {
+      const names = facebookUser.displayName?.split(' ');
+      if (names) {
+        return { firstName: names[0], secondName: names[1] };
       }
+      return null;
     }
-  }, []);
+    return null;
+  }, [facebookUser]);
+
   return (
     <>
       <StatusBar
@@ -117,6 +146,7 @@ const SignUp: React.FC = () => {
               name="name"
               icon="user"
               placeholder="Nome"
+              defaultValue={firstAndSecondFacebookName?.firstName}
               returnKeyType="next"
               onSubmitEditing={() => {
                 secondNameInputRef.current?.focus();
@@ -128,6 +158,9 @@ const SignUp: React.FC = () => {
               autoCapitalize="words"
               name="secondName"
               icon="users"
+              defaultValue={
+                facebookUser ? firstAndSecondFacebookName?.secondName : ''
+              }
               placeholder="Sobrenome"
               returnKeyType="next"
               onSubmitEditing={() => {
@@ -155,6 +188,7 @@ const SignUp: React.FC = () => {
               editable={false}
               selectTextOnFocus={false}
             />
+
             <Input
               name="phoneNumber"
               containerStyle={{ marginBottom: 12 }}

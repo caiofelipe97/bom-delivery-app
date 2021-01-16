@@ -15,6 +15,7 @@ interface InputProps extends TextInputProps {
   name: string;
   icon: string;
   containerStyle?: {};
+  defaultValue?: string;
 }
 
 interface InputValueReference {
@@ -26,13 +27,15 @@ interface InputRef {
 }
 
 const Input: React.RefForwardingComponent<InputRef, InputProps> = (
-  { name, icon, containerStyle = {}, ...rest },
+  { name, icon, defaultValue, containerStyle = {}, ...rest },
   ref,
 ) => {
   const inputElementRef = useRef<any>(null);
 
-  const { registerField, defaultValue = '', fieldName, error } = useField(name);
-  const inputValueRef = useRef<InputValueReference>({ value: defaultValue });
+  const { registerField, fieldName, error } = useField(name);
+  const inputValueRef = useRef<InputValueReference>({
+    value: defaultValue || '',
+  });
 
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
