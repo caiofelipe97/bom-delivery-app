@@ -5,12 +5,10 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import firestore from '@react-native-firebase/firestore';
-
-import { useRoute } from '@react-navigation/native';
-import api from '../services/api';
+import { Alert } from 'react-native';
 import { User } from '../types';
 
 interface AuthState {
@@ -23,8 +21,11 @@ interface SignInCredentials {
 
 interface AuthContextData {
   user: User | null;
+  facebookUser: FirebaseAuthTypes.User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   signInWithCustomToken(credentials: SignInCredentials): Promise<void>;
+  signInFacebookUser(): Promise<void>;
+  fbLogin(): Promise<FirebaseAuthTypes.UserCredential | undefined>;
   signOut(): void;
   loading: boolean;
 }
@@ -33,6 +34,10 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [
+    facebookUser,
+    setFacebookUser,
+  ] = useState<FirebaseAuthTypes.User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,16 +45,32 @@ const AuthProvider: React.FC = ({ children }) => {
       firebaseUser: FirebaseAuthTypes.User | null,
     ): Promise<void> {
       if (firebaseUser) {
+        console.log(firebaseUser);
+        const facebookLogin = firebaseUser.providerData.find(
+          userProviderData => userProviderData.providerId === 'facebook.com',
+        );
         const firestoreResponse = await firestore()
           .collection<User>('users')
           .doc(firebaseUser.uid)
           .get();
-        const firestoreUser = firestoreResponse.data();
-        if (firestoreUser) {
-          setUser(firestoreUser);
+        if (!firestoreResponse.exists && facebookLogin) {
+          if (facebookLogin) {
+            setFacebookUser(firebaseUser);
+            setLoading(false);
+          }
+        } else if (firestoreResponse.exists) {
+          const firestoreUser = firestoreResponse.data();
+          if (firestoreUser) {
+            setUser(firestoreUser);
+          }
+          setLoading(false);
+        } else {
+          setFacebookUser(null);
+          setUser(null);
+          setLoading(false);
         }
-        setLoading(false);
       } else {
+        setFacebookUser(null);
         setUser(null);
         setLoading(false);
       }
@@ -65,6 +86,51 @@ const AuthProvider: React.FC = ({ children }) => {
     }
   }, []);
 
+  const signInFacebookUser = useCallback(async () => {
+    if (facebookUser) {
+      const firestoreResponse = await firestore()
+        .collection<User>('users')
+        .doc(facebookUser.uid)
+        .get();
+      const firestoreUser = firestoreResponse.data();
+      setUser(firestoreUser || null);
+    }
+  }, [facebookUser]);
+
+  const fbLogin = useCallback(async () => {
+    try {
+      const result = await LoginManager.logInWithPermissions([
+        'public_profile',
+        'email',
+      ]);
+
+      if (result.isCancelled) {
+        throw new Error('User cancelled the login process');
+      }
+
+      // Once signed in, get the users AccesToken
+      const data = await AccessToken.getCurrentAccessToken();
+      if (!data) {
+        throw new Error('Something went wrong obtaining access token');
+      }
+
+      // Create a Firebase credential with the AccessToken
+      const facebookCredential = auth.FacebookAuthProvider.credential(
+        data.accessToken,
+      );
+
+      return await auth().signInWithCredential(facebookCredential);
+    } catch (error) {
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        Alert.alert(
+          'E-mail já cadastrado',
+          'Já existe uma conta esse e-mail, por favor faça o login por e-mail.',
+        );
+      }
+      console.log(error);
+    }
+  }, []);
+
   const signOut = useCallback(async () => {
     try {
       await auth().signOut();
@@ -75,7 +141,16 @@ const AuthProvider: React.FC = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser, signInWithCustomToken, signOut, loading }}
+      value={{
+        user,
+        facebookUser,
+        setUser,
+        signInFacebookUser,
+        signInWithCustomToken,
+        fbLogin,
+        signOut,
+        loading,
+      }}
     >
       {children}
     </AuthContext.Provider>
