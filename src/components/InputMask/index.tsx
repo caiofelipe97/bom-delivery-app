@@ -66,6 +66,7 @@ const InputMask: React.RefForwardingComponent<InputRef, InputProps> = (
       path: 'value',
       setValue(_ref: any, value: string) {
         inputValueRef.current.value = value;
+
         inputElementRef.current.setNativeProps({ text: value });
       },
       clearValue() {
@@ -90,7 +91,9 @@ const InputMask: React.RefForwardingComponent<InputRef, InputProps> = (
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
         value={inputValue}
-        onChangeText={text => {
+        onChangeText={(text, rawText) => {
+          console.log(rawText);
+
           inputValueRef.current.value = text;
           setInputValue(text);
         }}

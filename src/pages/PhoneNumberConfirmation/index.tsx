@@ -6,11 +6,11 @@ import * as Yup from 'yup';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import api from '../../services/api';
-import Input from '../../components/Input';
 import Button from '../../components/Button';
 import getValidationErrors from '../../utils/getValidationErrors';
 
 import { Container, Title, InfoText } from './styles';
+import InputMask from '../../components/InputMask';
 
 interface RouteParams {
   email: string;
@@ -30,16 +30,22 @@ const PhoneNumberConfirmation: React.FC = () => {
     async (data: PhoneNumberConfirmationProps) => {
       try {
         formRef.current?.setErrors({});
+        console.log(data);
 
         const schema = Yup.object().shape({
-          phoneNumber: Yup.string().required('Número de celular obrigatório'),
+          phoneNumber: Yup.string()
+            .required('Número de celular obrigatório')
+            .length(15, 'O número de celular é inválido'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        await api.post('phone-confirmations', data);
+        // Remove non numeric characters
+        const phoneNumber = data.phoneNumber.replace(/\D/g, '');
+
+        await api.post('phone-confirmations', { phoneNumber });
 
         navigation.navigate('PhoneNumberValidation', {
           email,
@@ -70,7 +76,13 @@ const PhoneNumberConfirmation: React.FC = () => {
     <Container>
       <Title>Insira seu número de celular</Title>
       <Form ref={formRef} onSubmit={handlePhoneNumberConfirmation}>
-        <Input
+        <InputMask
+          type="cel-phone"
+          options={{
+            maskType: 'BRL',
+            withDDD: true,
+            dddMask: '(99) ',
+          }}
           keyboardType="number-pad"
           name="phoneNumber"
           icon="phone"

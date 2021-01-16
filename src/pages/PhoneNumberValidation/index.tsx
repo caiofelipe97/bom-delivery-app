@@ -56,8 +56,11 @@ const PhoneNumberValidation: React.FC = () => {
         const { first, second, third, fourth } = data;
         const code = `${first}${second}${third}${fourth}`;
 
+        // Remove non numeric characters
+        const phoneNumberRawValue = phoneNumber.replace(/\D/g, '');
+
         await api.post<Response>('phone-confirmations/validate', {
-          phoneNumber,
+          phoneNumber: phoneNumberRawValue,
           code: Number(code),
         });
 
