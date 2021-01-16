@@ -25,7 +25,7 @@ interface AuthContextData {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   signInWithCustomToken(credentials: SignInCredentials): Promise<void>;
   signInFacebookUser(): Promise<void>;
-  fbLogin(): Promise<FirebaseAuthTypes.UserCredential | undefined>;
+  fbLogin(): Promise<void>;
   signOut(): void;
   loading: boolean;
 }
@@ -119,7 +119,7 @@ const AuthProvider: React.FC = ({ children }) => {
         data.accessToken,
       );
 
-      return await auth().signInWithCredential(facebookCredential);
+      await auth().signInWithCredential(facebookCredential);
     } catch (error) {
       if (error.code === 'auth/account-exists-with-different-credential') {
         Alert.alert(
