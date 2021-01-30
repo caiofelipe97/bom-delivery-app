@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { Image, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../hooks/auth';
+import { useAuth } from '../../../hooks/auth';
 
 import {
   Container,
@@ -13,8 +13,8 @@ import {
   TermsText,
 } from './styles';
 
-import logoImg from '../../assets/logo.png';
-import Button from '../../components/Button';
+import logoImg from '../../../assets/logo.png';
+import Button from '../../../components/Button';
 
 const SignIn: React.FC = () => {
   const navigation = useNavigation();

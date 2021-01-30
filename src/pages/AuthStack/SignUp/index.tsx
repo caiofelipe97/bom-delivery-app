@@ -8,14 +8,14 @@ import * as Yup from 'yup';
 
 import { Container, Background, Content, Title } from './styles';
 
-import { useAuth } from '../../hooks/auth';
-import nameImg from '../../assets/name.png';
-import Input from '../../components/Input';
-import InputMask from '../../components/InputMask';
-import Button from '../../components/Button';
-import getValidationErrors from '../../utils/getValidationErrors';
-import api from '../../services/api';
-import { User } from '../../types';
+import { useAuth } from '../../../hooks/auth';
+import nameImg from '../../../assets/name.png';
+import Input from '../../../components/Input';
+import InputMask from '../../../components/InputMask';
+import Button from '../../../components/Button';
+import getValidationErrors from '../../../utils/getValidationErrors';
+import api from '../../../services/api';
+import { User } from '../../../types';
 
 interface RouteParams {
   email: string;

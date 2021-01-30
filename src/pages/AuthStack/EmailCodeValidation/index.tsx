@@ -5,12 +5,12 @@ import { FormHandles } from '@unform/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Yup from 'yup';
 import { Container, Title, EmailText } from './styles';
-import getValidationErrors from '../../utils/getValidationErrors';
-import { useAuth } from '../../hooks/auth';
+import getValidationErrors from '../../../utils/getValidationErrors';
+import { useAuth } from '../../../hooks/auth';
 
-import SquareInput from '../../components/SquareInput';
-import Button from '../../components/Button';
-import api from '../../services/api';
+import SquareInput from '../../../components/SquareInput';
+import Button from '../../../components/Button';
+import api from '../../../services/api';
 
 interface RouteParams {
   email: string;

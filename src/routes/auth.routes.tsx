@@ -1,13 +1,13 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import SignIn from '../pages/SignIn';
-import SignUp from '../pages/SignUp';
-import CellphoneConfirmation from '../pages/PhoneNumberConfirmation';
-import EmailConfirmation from '../pages/EmailConfirmation';
-import EmailCodeValidation from '../pages/EmailCodeValidation';
-import PhoneNumberConfirmation from '../pages/PhoneNumberConfirmation';
-import PhoneNumberValidation from '../pages/PhoneNumberValidation';
+import SignIn from '../pages/AuthStack/SignIn';
+import SignUp from '../pages/AuthStack/SignUp';
+import CellphoneConfirmation from '../pages/AuthStack/PhoneNumberConfirmation';
+import EmailConfirmation from '../pages/AuthStack/EmailConfirmation';
+import EmailCodeValidation from '../pages/AuthStack/EmailCodeValidation';
+import PhoneNumberConfirmation from '../pages/AuthStack/PhoneNumberConfirmation';
+import PhoneNumberValidation from '../pages/AuthStack/PhoneNumberValidation';
 
 const Auth = createStackNavigator();
 
