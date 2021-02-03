@@ -94,7 +94,7 @@ const AppRoutes: React.FC = () => {
             <FeatherIcon
               name="home"
               size={20}
-              color={focused ? '#78308c' : '3E4462'}
+              style={{ color: focused ? '#78308C' : '#3E4462' }}
             />
           ),
         }}
@@ -107,7 +107,7 @@ const AppRoutes: React.FC = () => {
             <FeatherIcon
               name="shopping-bag"
               size={20}
-              color={focused ? '#78308c' : '3E4462'}
+              style={{ color: focused ? '#78308C' : '#3E4462' }}
             />
           ),
         }}
@@ -120,7 +120,7 @@ const AppRoutes: React.FC = () => {
             <FeatherIcon
               name="search"
               size={20}
-              color={focused ? '#78308c' : '3E4462'}
+              style={{ color: focused ? '#78308C' : '#3E4462' }}
             />
           ),
         }}
@@ -133,7 +133,7 @@ const AppRoutes: React.FC = () => {
             <FeatherIcon
               name="user"
               size={20}
-              color={focused ? '#78308c' : '3E4462'}
+              style={{ color: focused ? '#78308C' : '#3E4462' }}
             />
           ),
         }}
