@@ -5,6 +5,7 @@ interface ContainerProps {
 }
 
 export const Container = styled.View<ContainerProps>`
+  width: 100%;
   margin: ${props => (props.noMargin ? 0 : '16px 0 0')};
 `;
 

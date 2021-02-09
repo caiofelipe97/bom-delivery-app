@@ -27,9 +27,9 @@ const RestaurantList: React.FC<RestaurantListProps> = ({ data }) => {
   return (
     <RestaurantListContainer
       data={data}
-      keyExtractor={item => String(item.id)}
+      keyExtractor={item => String(item.user)}
       renderItem={({ item }) => (
-        <RestaurantListItem key={item.id}>
+        <RestaurantListItem key={item.user}>
           <LogoContainer>
             <Logo source={{ uri: item.img }} />
           </LogoContainer>

@@ -5,7 +5,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { FlatList } from 'react-native';
 
 export interface Restaurant {
-  id: string;
+  user: string;
   name: string;
   img: string;
   foods: string[];

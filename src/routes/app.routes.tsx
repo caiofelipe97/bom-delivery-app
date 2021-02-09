@@ -93,8 +93,10 @@ const AppRoutes: React.FC = () => {
           tabBarIcon: ({ focused }) => (
             <FeatherIcon
               name="home"
-              size={20}
-              style={{ color: focused ? '#78308C' : '#3E4462' }}
+              size={focused ? 24 : 22}
+              style={{
+                color: focused ? '#78308C' : '#3E4462',
+              }}
             />
           ),
         }}
@@ -106,7 +108,7 @@ const AppRoutes: React.FC = () => {
           tabBarIcon: ({ focused }) => (
             <FeatherIcon
               name="shopping-bag"
-              size={20}
+              size={focused ? 24 : 22}
               style={{ color: focused ? '#78308C' : '#3E4462' }}
             />
           ),
@@ -119,7 +121,7 @@ const AppRoutes: React.FC = () => {
           tabBarIcon: ({ focused }) => (
             <FeatherIcon
               name="search"
-              size={20}
+              size={focused ? 24 : 22}
               style={{ color: focused ? '#78308C' : '#3E4462' }}
             />
           ),
@@ -132,7 +134,7 @@ const AppRoutes: React.FC = () => {
           tabBarIcon: ({ focused }) => (
             <FeatherIcon
               name="user"
-              size={20}
+              size={focused ? 24 : 22}
               style={{ color: focused ? '#78308C' : '#3E4462' }}
             />
           ),
