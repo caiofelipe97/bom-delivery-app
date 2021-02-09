@@ -1,20 +1,8 @@
 import styled, { css } from 'styled-components/native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-
 import { FlatList } from 'react-native';
-
-export interface Restaurant {
-  user: string;
-  name: string;
-  img: string;
-  foods: string[];
-  timeToDelivery: {
-    max: string;
-    min: string;
-  };
-  deliveryPrice: number;
-}
+import { Restaurant } from '~/types';
 
 interface TextDescriptionProps {
   color: string;

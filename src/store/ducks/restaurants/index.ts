@@ -1,6 +1,7 @@
 import { createReducer } from 'reduxsauce';
 import { Types } from './actions';
-import { RestaurantsState, Restaurant } from './types';
+import { Restaurant } from '~/types';
+import { RestaurantsState } from './types';
 
 /* Initial State */
 const initialState: RestaurantsState = {

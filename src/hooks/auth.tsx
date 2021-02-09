@@ -9,7 +9,7 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import firestore from '@react-native-firebase/firestore';
 import { Alert } from 'react-native';
-import { User } from '../types';
+import { User } from '~/types';
 
 interface AuthState {
   token: string;

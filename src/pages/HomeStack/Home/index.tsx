@@ -7,7 +7,7 @@ import Section from '../../../components/Section';
 import RestaurantList from '../../../components/RestaurantList';
 import { useAuth } from '../../../hooks/auth';
 import { Container, Title } from './styles';
-import { Restaurant } from '../../../store/ducks/restaurants/types';
+import { Restaurant } from '~/types';
 
 const Home: React.FC = () => {
   const { user } = useAuth();

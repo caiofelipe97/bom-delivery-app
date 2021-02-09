@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 import formatMoney from '../../utils/formatMoney';
-
+import { Restaurant } from '~/types';
 import {
-  Restaurant,
   RestaurantListContainer,
   RestaurantListItem,
   LogoContainer,
@@ -27,9 +26,9 @@ const RestaurantList: React.FC<RestaurantListProps> = ({ data }) => {
   return (
     <RestaurantListContainer
       data={data}
-      keyExtractor={item => String(item.user)}
+      keyExtractor={item => String(item.id)}
       renderItem={({ item }) => (
-        <RestaurantListItem key={item.user}>
+        <RestaurantListItem key={item.id}>
           <LogoContainer>
             <Logo source={{ uri: item.img }} />
           </LogoContainer>

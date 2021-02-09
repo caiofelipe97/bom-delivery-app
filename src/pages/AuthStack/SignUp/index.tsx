@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Alert, Image, StatusBar, TextInput } from 'react-native';
 
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
@@ -15,7 +15,6 @@ import InputMask from '../../../components/InputMask';
 import Button from '../../../components/Button';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import api from '../../../services/api';
-import { User } from '../../../types';
 
 interface RouteParams {
   email: string;
