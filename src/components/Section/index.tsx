@@ -4,7 +4,7 @@ import Typography from '../Typography';
 import { Container, SectionHeader, Left } from './styles';
 
 interface SectionProps {
-  title: string;
+  title?: string;
   subTitle?: string;
   noMargin?: boolean;
 }

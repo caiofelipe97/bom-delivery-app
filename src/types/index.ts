@@ -18,3 +18,14 @@ export interface User {
   phoneNumber: string;
   birthDate: Date;
 }
+
+export interface Category {
+  id: string;
+  imageUrl: string;
+  title: string;
+}
+
+export interface Promotion {
+  id: string;
+  bannerUrl: string;
+}
