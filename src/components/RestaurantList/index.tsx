@@ -24,10 +24,8 @@ const RestaurantList: React.FC<RestaurantListProps> = ({ data }) => {
     return foods.join(', ');
   }, []);
   return (
-    <RestaurantListContainer
-      data={data}
-      keyExtractor={item => String(item.id)}
-      renderItem={({ item }) => (
+    <RestaurantListContainer>
+      {data.map(item => (
         <RestaurantListItem key={item.id}>
           <LogoContainer>
             <Logo source={{ uri: item.img }} />
@@ -61,8 +59,8 @@ const RestaurantList: React.FC<RestaurantListProps> = ({ data }) => {
             </DeliveryDetails>
           </Infos>
         </RestaurantListItem>
-      )}
-    />
+      ))}
+    </RestaurantListContainer>
   );
 };
 

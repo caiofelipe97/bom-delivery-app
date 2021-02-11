@@ -10,9 +10,7 @@ interface TextDescriptionProps {
   bold?: boolean;
 }
 
-export const RestaurantListContainer = styled(
-  FlatList as new () => FlatList<Restaurant>,
-)`
+export const RestaurantListContainer = styled.View`
   width: 100%;
 `;
 
