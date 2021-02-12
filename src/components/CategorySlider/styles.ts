@@ -1,3 +1,4 @@
+import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 import { FlatList } from 'react-native';
 import { Category } from '~/types';
@@ -13,7 +14,7 @@ export const CategorySliderList = styled(
   padding-bottom: 12px;
 `;
 
-export const CategorySliderItem = styled.View`
+export const CategorySliderItem = styled(RectButton)`
   width: 110px;
   overflow: hidden;
   margin-right: 8px;

@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import Home from '../pages/HomeStack/Home';
+import List from '../pages/HomeStack/List';
 import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';
@@ -21,6 +22,7 @@ const HomeStackNavigator: React.FC = () => {
       }}
     >
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="List" component={List} />
     </Stack.Navigator>
   );
 };

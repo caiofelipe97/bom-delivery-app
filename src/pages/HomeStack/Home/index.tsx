@@ -9,7 +9,6 @@ import Section from '../../../components/Section';
 import RestaurantList from '../../../components/RestaurantList';
 import CategorySlider from '../../../components/CategorySlider';
 import PromoSlider from '../../../components/PromoSlider';
-import { useAuth } from '../../../hooks/auth';
 import {
   Container,
   Header,
@@ -23,7 +22,6 @@ import {
 import { Restaurant } from '~/types';
 
 const Home: React.FC = () => {
-  const { user } = useAuth();
   const dispatch = useDispatch();
 
   const restaurantList = useSelector<ApplicationState, Restaurant[]>(
