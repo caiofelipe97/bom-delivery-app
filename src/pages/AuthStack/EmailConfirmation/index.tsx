@@ -6,11 +6,11 @@ import { FormHandles } from '@unform/core';
 import { useNavigation } from '@react-navigation/native';
 
 import * as Yup from 'yup';
-import api from '../../services/api';
+import api from '../../../services/api';
 
-import getValidationErrors from '../../utils/getValidationErrors';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
+import getValidationErrors from '../../../utils/getValidationErrors';
+import Input from '../../../components/Input';
+import Button from '../../../components/Button';
 
 import {
   Container,

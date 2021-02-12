@@ -1,16 +1,16 @@
 import React from 'react';
-import Button from '../../components/Button';
-import { useAuth } from '../../hooks/auth';
+import Button from '../../../components/Button';
+import { useAuth } from '../../../hooks/auth';
 import { Container, Title } from './styles';
 
-const Home: React.FC = () => {
+const Profile: React.FC = () => {
   const { signOut, user } = useAuth();
   return (
     <Container>
-      <Title>Bem-Vindo ao Bom Delivery, {user?.name}!</Title>
+      <Title>{user?.name}</Title>
       <Button onPress={signOut}>Logout</Button>
     </Container>
   );
 };
 
-export default Home;
+export default Profile;
