@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ApplicationState } from '../../../store';
 import { Creators as restaurantsCreators } from '../../../store/ducks/restaurants/actions';
@@ -22,15 +23,26 @@ import {
 import { Restaurant } from '~/types';
 
 const Home: React.FC = () => {
+  const isFocused = useIsFocused();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const restaurantList = useSelector<ApplicationState, Restaurant[]>(
     state => state.restaurants.restaurantList,
   );
 
   useEffect(() => {
-    dispatch(restaurantsCreators.getAllRestaurants());
-  }, [dispatch]);
+    if (isFocused) dispatch(restaurantsCreators.getAllRestaurants());
+  }, [dispatch, isFocused]);
+
+  const handleCategoryFilter = useCallback(
+    category => {
+      navigation.navigate('List', {
+        category,
+      });
+    },
+    [navigation],
+  );
 
   return (
     <ScrollView>
@@ -73,6 +85,7 @@ const Home: React.FC = () => {
                   'https://content.portaldofranchising.com.br/wp-content/uploads/2018/04/17180153/franquias-de-acai-1.jpg',
               },
             ]}
+            onCategoryClick={handleCategoryFilter}
           />
         </Section>
         <Section>

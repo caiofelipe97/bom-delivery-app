@@ -1,6 +1,9 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
@@ -10,7 +13,16 @@ import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';
 
-const Stack = createStackNavigator();
+type AppStackParamList = {
+  Home: undefined;
+  List: { category: string | undefined };
+  Orders: undefined;
+  Search: undefined;
+  Profile: undefined;
+};
+
+const Stack = createStackNavigator<AppStackParamList>();
+
 const Tab = createBottomTabNavigator();
 
 const HomeStackNavigator: React.FC = () => {
@@ -19,10 +31,30 @@ const HomeStackNavigator: React.FC = () => {
       screenOptions={{
         headerShown: false,
         cardStyle: { backgroundColor: '#F6F2F8' },
+        ...TransitionPresets.SlideFromRightIOS,
       }}
     >
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="List" component={List} />
+      <Stack.Screen
+        name="List"
+        component={List}
+        options={({ route }) => ({
+          title: route?.params?.category?.toUpperCase(),
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: '#F6F2F8',
+          },
+          headerTintColor: '#78308C',
+          headerTitleAlign: 'center',
+          headerBackTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleStyle: {
+            color: '#000',
+            fontSize: 18,
+          },
+        })}
+      />
     </Stack.Navigator>
   );
 };
