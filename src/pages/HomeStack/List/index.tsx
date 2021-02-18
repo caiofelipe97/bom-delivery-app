@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -20,8 +21,12 @@ const List: React.FC = () => {
   const { params } = useRoute();
   const { category } = params as RouteParams;
 
-  const restaurantList = useSelector<ApplicationState, Restaurant[]>(
-    state => state.restaurants.restaurantList,
+  const filteredRestaurants = useSelector<ApplicationState, Restaurant[]>(
+    state => state.restaurants.filteredRestaurants,
+  );
+
+  const isLoading = useSelector<ApplicationState, boolean>(
+    state => state.loading.loading,
   );
 
   useEffect(() => {
@@ -31,11 +36,15 @@ const List: React.FC = () => {
   }, [category, dispatch]);
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={isLoading ? { flex: 1 } : {}}>
       <Container>
-        <Section>
-          <RestaurantList data={restaurantList} />
-        </Section>
+        {isLoading ? (
+          <ActivityIndicator size={50} color="#78308c" style={{ flex: 1 }} />
+        ) : (
+          <Section>
+            <RestaurantList data={filteredRestaurants} />
+          </Section>
+        )}
       </Container>
     </ScrollView>
   );

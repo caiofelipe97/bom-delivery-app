@@ -5,22 +5,35 @@ import { RestaurantsState } from './types';
 
 /* Initial State */
 const initialState: RestaurantsState = {
-  restaurantList: [],
+  allRestaurants: [],
+  filteredRestaurants: [],
 };
 
-interface successGetRestaurantListPayload {
+interface successGetAllRestaurantsPayload {
   data: Restaurant[];
 }
-const successGetRestaurantList = (
+const successGetAllRestaurants = (
   state = initialState,
-  { data }: successGetRestaurantListPayload,
+  { data }: successGetAllRestaurantsPayload,
 ): RestaurantsState => ({
   ...state,
-  restaurantList: data,
+  allRestaurants: data,
+});
+
+interface successGetFilteredRestaurantsPayload {
+  data: Restaurant[];
+}
+const successGetFilteredRestaurants = (
+  state = initialState,
+  { data }: successGetFilteredRestaurantsPayload,
+): RestaurantsState => ({
+  ...state,
+  filteredRestaurants: data,
 });
 
 const solicitation = {
-  [Types.SUCCESS_GET_RESTAURANT_LIST]: successGetRestaurantList,
+  [Types.SUCCESS_GET_ALL_RESTAURANTS]: successGetAllRestaurants,
+  [Types.SUCCESS_GET_FILTERED_RESTAURANTS]: successGetFilteredRestaurants,
 };
 
 export default createReducer(initialState, solicitation);

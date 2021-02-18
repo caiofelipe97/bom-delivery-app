@@ -4,14 +4,19 @@ import {
   Types as restaurantsTypes,
 } from './actions';
 
+import { Creators as loadingCreators } from '../loading/actions';
+
 import { getAll, getByCategory } from './service';
 
 function* getAllRestaurants() {
   try {
+    yield put(loadingCreators.start());
     const data = yield call(getAll);
-    yield put(restaurantsCreators.successGetRestaurantList(data));
+    yield put(restaurantsCreators.successGetAllRestaurants(data));
+    yield put(loadingCreators.stop());
   } catch (error) {
     console.log(error);
+    yield put(loadingCreators.stop());
   }
 }
 
@@ -22,12 +27,13 @@ function* getRestaurantsByCategory({
   category,
 }: getRestaurantsByCategorypProps) {
   try {
-    console.log('getRestaurantsByCategory');
-    console.log(category);
+    yield put(loadingCreators.start());
     const data = yield call(getByCategory, category);
-    yield put(restaurantsCreators.successGetRestaurantList(data));
+    yield put(restaurantsCreators.successGetFilteredRestaurants(data));
+    yield put(loadingCreators.stop());
   } catch (error) {
     console.log(error);
+    yield put(loadingCreators.stop());
   }
 }
 

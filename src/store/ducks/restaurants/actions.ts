@@ -2,6 +2,7 @@ import { createActions } from 'reduxsauce';
 
 export const { Types, Creators } = createActions({
   getAllRestaurants: [],
-  successGetRestaurantList: ['data'],
+  successGetAllRestaurants: ['data'],
+  successGetFilteredRestaurants: ['data'],
   getRestaurantsByCategory: ['category'],
 });
