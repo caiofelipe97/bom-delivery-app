@@ -9,6 +9,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import Home from '../pages/HomeStack/Home';
 import List from '../pages/HomeStack/List';
+import Filters from '../pages/HomeStack/Filters';
 import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';
@@ -16,6 +17,7 @@ import Profile from '../pages/ProfileStack/Profile';
 type AppStackParamList = {
   Home: undefined;
   List: { category: string | undefined };
+  Filters: undefined;
   Orders: undefined;
   Search: undefined;
   Profile: undefined;
@@ -40,6 +42,26 @@ const HomeStackNavigator: React.FC = () => {
         component={List}
         options={({ route }) => ({
           title: route?.params?.category?.toUpperCase(),
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: '#F6F2F8',
+          },
+          headerTintColor: '#78308C',
+          headerTitleAlign: 'center',
+          headerBackTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleStyle: {
+            color: '#000',
+            fontSize: 18,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="Filters"
+        component={Filters}
+        options={() => ({
+          title: 'FILTROS',
           headerShown: true,
           headerStyle: {
             backgroundColor: '#F6F2F8',

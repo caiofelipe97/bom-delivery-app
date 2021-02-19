@@ -48,6 +48,10 @@ const Home: React.FC = () => {
     [navigation],
   );
 
+  const handleFiltersPress = useCallback(() => {
+    navigation.navigate('Filters');
+  }, [navigation]);
+
   return (
     <ScrollView contentContainerStyle={isLoading ? { flex: 1 } : {}}>
       <Container>
@@ -56,7 +60,7 @@ const Home: React.FC = () => {
             <SearchText numberOfLines={1}>Luiza Bezerra Motta, 720</SearchText>
             <ChevronDownIcon name="chevron-down" size={24} />
           </SearchButton>
-          <FilterButton>
+          <FilterButton onPress={handleFiltersPress}>
             <FilterText>Filtros</FilterText>
             <FilterImage source={FilterIcon} />
           </FilterButton>
