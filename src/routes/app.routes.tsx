@@ -45,26 +45,7 @@ const HomeStackNavigator: React.FC = () => {
           headerShown: true,
           headerStyle: {
             backgroundColor: '#F6F2F8',
-          },
-          headerTintColor: '#78308C',
-          headerTitleAlign: 'center',
-          headerBackTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerTitleStyle: {
-            color: '#000',
-            fontSize: 18,
-          },
-        })}
-      />
-      <Stack.Screen
-        name="Filters"
-        component={Filters}
-        options={() => ({
-          title: 'FILTROS',
-          headerShown: true,
-          headerStyle: {
-            backgroundColor: '#F6F2F8',
+            elevation: 0,
           },
           headerTintColor: '#78308C',
           headerTitleAlign: 'center',
@@ -120,7 +101,7 @@ const ProfileStackNavigator: React.FC = () => {
   );
 };
 
-const AppRoutes: React.FC = () => {
+const HomeTabs: React.FC = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -197,6 +178,40 @@ const AppRoutes: React.FC = () => {
         }}
       />
     </Tab.Navigator>
+  );
+};
+
+const AppRoutes: React.FC = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        cardStyle: { backgroundColor: '#F6F2F8' },
+      }}
+    >
+      <Stack.Screen name="Home" component={HomeTabs} />
+      <Stack.Screen
+        name="Filters"
+        component={Filters}
+        options={() => ({
+          title: 'FILTROS',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: '#F6F2F8',
+            elevation: 0,
+          },
+          headerTintColor: '#78308C',
+          headerTitleAlign: 'center',
+          headerBackTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleStyle: {
+            color: '#000',
+            fontSize: 18,
+          },
+        })}
+      />
+    </Stack.Navigator>
   );
 };
 
