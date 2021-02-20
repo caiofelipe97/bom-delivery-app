@@ -1,10 +1,28 @@
 import React from 'react';
-import MotocycleIcon from '../../assets/motocycle-icon.svg';
-import { Container } from './styles';
+import { SvgProps } from 'react-native-svg';
+import { Container, Content, Title } from './styles';
 
-const CategoryCircleButton: React.FC = ({ ...rest }) => (
-  <Container {...rest}>
-    <MotocycleIcon />
+interface CategoryCircleButtonProps {
+  title: string;
+  Icon: React.FC<SvgProps>;
+  selected: boolean;
+  SelectedIcon: React.FC<SvgProps>;
+  onPress(): void;
+}
+
+const CategoryCircleButton: React.FC<CategoryCircleButtonProps> = ({
+  title,
+  Icon,
+  selected,
+  SelectedIcon,
+  onPress,
+  ...rest
+}) => (
+  <Container>
+    <Content isSelected={selected} {...rest} onPress={onPress}>
+      {selected ? <SelectedIcon /> : <Icon />}
+    </Content>
+    <Title isSelected={selected}>{title}</Title>
   </Container>
 );
 

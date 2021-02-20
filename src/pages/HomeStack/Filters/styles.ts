@@ -4,15 +4,26 @@ import Button from '~/components/Button';
 
 export const Container = styled.View`
   flex: 1;
-  padding: 0 10px ${Platform.OS === 'android' ? 150 : 40}px;
+  padding: 0 12px ${Platform.OS === 'android' ? 150 : 40}px;
 `;
 
 export const SectionContainer = styled.View`
   margin-bottom: 8px;
-  flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding: 16px 0 0;
+`;
+
+export const CircleButtonsContainer = styled.View`
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+export const TagsContainer = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
 `;
 
 export const ShowResultsContainer = styled.View`

@@ -1,18 +1,39 @@
-import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
+import styled, { css } from 'styled-components/native';
 
-export const Container = styled(RectButton)`
-  width: 100%;
-  height: 60px;
-  background: #78308c;
-  border-radius: 10px;
+interface SelectedProps {
+  isSelected: boolean;
+}
+
+export const Container = styled.View`
+  justify-content: space-between;
+  width: 75px;
+`;
+
+export const Content = styled.TouchableOpacity<SelectedProps>`
+  width: 75px;
+  height: 75px;
+  border-radius: 50px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
   margin-top: 8px;
   justify-content: center;
   align-items: center;
+
+  ${props =>
+    props.isSelected &&
+    css`
+      border-color: #78308c;
+      background-color: rgba(120, 48, 140, 0.25);
+    `}
 `;
 
-export const ButtonText = styled.Text`
-  font-family: 'RobotoSlab-Medium';
-  color: #f6f6f9;
-  font-size: 18px;
+export const Title = styled.Text<SelectedProps>`
+  height: 40px;
+  flex-wrap: wrap;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.54);
+  ${props =>
+    props.isSelected &&
+    css`
+      color: #78308c;
+    `}
 `;
