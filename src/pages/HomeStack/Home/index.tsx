@@ -17,6 +17,10 @@ import {
   SearchButton,
   SearchText,
   ChevronDownIcon,
+  EmptyListContainer,
+  EmptyListText,
+  ClearFiltersButton,
+  ClearFiltersText,
 } from './styles';
 import { RestaurantsState } from '~/store/ducks/restaurants/types';
 
@@ -34,6 +38,7 @@ const Home: React.FC = () => {
   );
 
   useEffect(() => {
+    dispatch(restaurantsCreators.setFilters('', '', [], 0));
     dispatch(restaurantsCreators.getAllRestaurants());
   }, [dispatch]);
 
@@ -50,12 +55,21 @@ const Home: React.FC = () => {
     navigation.navigate('Filters');
   }, [navigation]);
 
+  const handleClearFilters = useCallback(() => {
+    dispatch(restaurantsCreators.getAllRestaurants());
+    dispatch(restaurantsCreators.setFilters('', '', [], 0));
+  }, [dispatch]);
+
   const hasFilter = useMemo(() => {
     return numberOfFilters > 0;
   }, [numberOfFilters]);
 
+  const isEmpty = useMemo(() => {
+    return allRestaurants.length === 0;
+  }, [allRestaurants]);
+
   return (
-    <ScrollView contentContainerStyle={isLoading ? { flex: 1 } : {}}>
+    <ScrollView contentContainerStyle={isLoading || isEmpty ? { flex: 1 } : {}}>
       <Container>
         <Header>
           <SearchButton>
@@ -124,9 +138,18 @@ const Home: React.FC = () => {
                 </Section>
               </>
             )}
-            <Section title="Lojas" noMargin>
-              <RestaurantList data={allRestaurants} />
-            </Section>
+            {!isEmpty ? (
+              <Section title="Lojas" noMargin>
+                <RestaurantList data={allRestaurants} />
+              </Section>
+            ) : (
+              <EmptyListContainer>
+                <EmptyListText>Nenhum Resultado encontrado</EmptyListText>
+                <ClearFiltersButton onPress={handleClearFilters}>
+                  <ClearFiltersText>Limpar filtros</ClearFiltersText>
+                </ClearFiltersButton>
+              </EmptyListContainer>
+            )}
           </>
         )}
       </Container>

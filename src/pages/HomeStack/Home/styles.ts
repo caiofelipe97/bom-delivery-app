@@ -39,3 +39,20 @@ export const SearchText = styled.Text`
 export const ChevronDownIcon = styled(FeatherIcon)`
   color: #78308c;
 `;
+
+export const EmptyListContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+export const EmptyListText = styled.Text`
+  font-family: 'RobotoSlab-Regular';
+  font-size: 16px;
+`;
+export const ClearFiltersButton = styled.TouchableOpacity`
+  margin-top: 10px;
+`;
+export const ClearFiltersText = styled.Text`
+  font-family: 'RobotoSlab-Regular';
+  color: #78308c;
+`;
