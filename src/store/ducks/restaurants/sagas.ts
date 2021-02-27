@@ -60,9 +60,6 @@ function* getFilteredRestaurants({
       paymentMethodFilter,
       categoriesFilter,
     );
-    console.log('data');
-    console.log(data);
-    console.log(selectedCategory);
     let numberOfFilters = 0;
     if (
       (sortFilter && sortFilter === 'deliveryPrice') ||
