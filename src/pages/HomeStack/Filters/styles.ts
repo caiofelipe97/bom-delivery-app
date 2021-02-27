@@ -1,6 +1,19 @@
-import styled from 'styled-components/native';
 import { Platform } from 'react-native';
+import styled from 'styled-components/native';
 import Button from '~/components/Button';
+
+export const ClearFilterContainer = styled.View`
+  padding-right: 12px;
+`;
+
+export const ClearFiltersButton = styled.TouchableOpacity`
+  width: 100%;
+`;
+
+export const ClearFiltersText = styled.Text`
+  color: #78308c;
+  font-family: 'RobotoSlab-Regular';
+`;
 
 export const Container = styled.View`
   flex: 1;

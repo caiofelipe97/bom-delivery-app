@@ -16,9 +16,6 @@ export const RestaurantListContainer = styled.View`
 
 export const RestaurantListItem = styled.View`
   background-color: #ffffff;
-  border-color: #d9d9d9;
-  border-width: 1px;
-  border-bottom-width: 3px;
   margin-bottom: 8px;
   flex-direction: row;
   border-radius: 5px;

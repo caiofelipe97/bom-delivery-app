@@ -5,9 +5,13 @@ export interface Restaurant {
   img: string;
   foods: string[];
   timeToDelivery: {
-    max: string;
-    min: string;
+    min: number;
+    max: number;
   };
+  'timeToDelivery.min': number;
+  'timeToDelivery.max': number;
+  'paymentMethod.cardMachine': boolean;
+  'paymentMethod.money': boolean;
   deliveryPrice: number;
 }
 
