@@ -4,7 +4,9 @@ interface SelectedProps {
   isSelected: boolean;
 }
 
-export const Container = styled.TouchableOpacity<SelectedProps>`
+export const TouchableButton = styled.TouchableWithoutFeedback``;
+
+export const ButtonContainer = styled.View<SelectedProps>`
   margin-right: 8px;
   border-radius: 34px;
   padding: 8px 12px;

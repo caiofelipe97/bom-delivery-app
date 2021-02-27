@@ -9,7 +9,9 @@ export const Container = styled.View`
   width: 75px;
 `;
 
-export const Content = styled.TouchableOpacity<SelectedProps>`
+export const TouchableButton = styled.TouchableWithoutFeedback``;
+
+export const ButtonContainer = styled.View<SelectedProps>`
   width: 75px;
   height: 75px;
   border-radius: 50px;

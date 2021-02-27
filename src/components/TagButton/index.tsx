@@ -1,6 +1,6 @@
 import React from 'react';
 import { SvgProps } from 'react-native-svg';
-import { Container, Title } from './styles';
+import { TouchableButton, ButtonContainer, Title } from './styles';
 
 interface TagButtonProps {
   name: string;
@@ -16,10 +16,12 @@ const TagButton: React.FC<TagButtonProps> = ({
   onPress,
   ...rest
 }) => (
-  <Container isSelected={selected} onPress={onPress} {...rest}>
-    <Title isSelected={selected}>{name}</Title>
-    {Icon && <Icon />}
-  </Container>
+  <TouchableButton onPress={onPress} {...rest}>
+    <ButtonContainer isSelected={selected}>
+      <Title isSelected={selected}>{name}</Title>
+      {Icon && <Icon />}
+    </ButtonContainer>
+  </TouchableButton>
 );
 
 export default TagButton;
