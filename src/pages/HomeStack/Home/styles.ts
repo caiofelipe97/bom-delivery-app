@@ -13,7 +13,7 @@ export const Container = styled.View`
 export const Header = styled.View`
   width: 100%;
   flex-direction: row;
-  margin-top: 40px;
+  margin-top: 32px;
   justify-content: space-between;
 `;
 
@@ -40,22 +40,19 @@ export const ChevronDownIcon = styled(FeatherIcon)`
   color: #78308c;
 `;
 
-export const FilterButton = styled.TouchableOpacity`
-  display: flex;
-  border-radius: 30px;
-  height: 36px;
-  background-color: #78308c;
-  align-items: center;
+export const EmptyListContainer = styled.View`
+  flex: 1;
   justify-content: center;
-  flex-direction: row;
-  padding: 0px 12px;
+  align-items: center;
 `;
-
-export const FilterText = styled.Text`
-  color: #e0e0e0;
+export const EmptyListText = styled.Text`
+  font-family: 'RobotoSlab-Regular';
   font-size: 16px;
-  font-family: 'RobotoSlab-Medium';
-  margin-right: 4px;
 `;
-
-export const FilterImage = styled.Image``;
+export const ClearFiltersButton = styled.TouchableOpacity`
+  margin-top: 10px;
+`;
+export const ClearFiltersText = styled.Text`
+  font-family: 'RobotoSlab-Regular';
+  color: #78308c;
+`;

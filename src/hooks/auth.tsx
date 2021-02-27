@@ -134,6 +134,8 @@ const AuthProvider: React.FC = ({ children }) => {
   const signOut = useCallback(async () => {
     try {
       await auth().signOut();
+      setUser(null);
+      setFacebookUser(null);
     } catch (e) {
       console.log(e);
     }

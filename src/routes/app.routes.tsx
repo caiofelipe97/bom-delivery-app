@@ -1,28 +1,119 @@
-import React from 'react';
-import { Platform } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, { useCallback, useMemo } from 'react';
+import { Platform, View, Image } from 'react-native';
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from '@react-navigation/stack';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
+import { RectButton } from 'react-native-gesture-handler';
+import BackArrow from '../assets/backArrow.png';
+import { Creators as restaurantsCreators } from '../store/ducks/restaurants/actions';
+
+import FilterButton from '../components/FilterButton';
+
 import Home from '../pages/HomeStack/Home';
 import List from '../pages/HomeStack/List';
+import Filters from '../pages/HomeStack/Filters';
 import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';
+import { ApplicationState } from '~/store';
+import { RestaurantsState } from '~/store/ducks/restaurants/types';
 
-const Stack = createStackNavigator();
+type AppStackParamList = {
+  Home: undefined;
+  List: { category: string | undefined };
+  Filters: undefined;
+  Orders: undefined;
+  Search: undefined;
+  Profile: undefined;
+};
+
+const Stack = createStackNavigator<AppStackParamList>();
+
 const Tab = createBottomTabNavigator();
 
 const HomeStackNavigator: React.FC = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const { numberOfFilters } = useSelector<ApplicationState, RestaurantsState>(
+    state => state.restaurants,
+  );
+
+  const handleFiltersPress = useCallback(
+    selectedCategory => {
+      navigation.navigate('Filters', { selectedCategory });
+    },
+    [navigation],
+  );
+
+  const hasFilter = useMemo(() => {
+    return numberOfFilters > 0;
+  }, [numberOfFilters]);
+
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
         cardStyle: { backgroundColor: '#F6F2F8' },
+        ...TransitionPresets.SlideFromRightIOS,
       }}
     >
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="List" component={List} />
+      <Stack.Screen
+        name="List"
+        component={List}
+        options={({ route }) => ({
+          title: route?.params?.category?.toUpperCase(),
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: '#F6F2F8',
+            elevation: 0,
+          },
+          headerTintColor: '#78308C',
+          headerTitleAlign: 'center',
+          headerBackTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleStyle: {
+            color: '#000',
+            fontSize: 18,
+          },
+          headerBackImage: () => (
+            <RectButton
+              style={{
+                width: 32,
+                height: 32,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                dispatch(restaurantsCreators.setFilters('', '', [], 0));
+              }}
+            >
+              <Image source={BackArrow} />
+            </RectButton>
+          ),
+
+          headerRight: () => (
+            <View style={{ paddingRight: 12 }}>
+              <FilterButton
+                handleFiltersPress={() => {
+                  handleFiltersPress(route?.params?.category);
+                }}
+                hasFilter={hasFilter}
+                numberOfFilters={numberOfFilters}
+              />
+            </View>
+          ),
+        })}
+      />
     </Stack.Navigator>
   );
 };
@@ -66,7 +157,7 @@ const ProfileStackNavigator: React.FC = () => {
   );
 };
 
-const AppRoutes: React.FC = () => {
+const HomeTabs: React.FC = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -143,6 +234,40 @@ const AppRoutes: React.FC = () => {
         }}
       />
     </Tab.Navigator>
+  );
+};
+
+const AppRoutes: React.FC = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        cardStyle: { backgroundColor: '#F6F2F8' },
+      }}
+    >
+      <Stack.Screen name="Home" component={HomeTabs} />
+      <Stack.Screen
+        name="Filters"
+        component={Filters}
+        options={() => ({
+          title: 'FILTROS',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: '#F6F2F8',
+            elevation: 0,
+          },
+          headerTintColor: '#78308C',
+          headerTitleAlign: 'center',
+          headerBackTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleStyle: {
+            color: '#000',
+            fontSize: 18,
+          },
+        })}
+      />
+    </Stack.Navigator>
   );
 };
 
