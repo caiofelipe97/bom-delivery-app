@@ -133,6 +133,11 @@ const Home: React.FC = () => {
                         bannerUrl:
                           'https://static-images.ifood.com.br/image/upload/t_high,q_100/webapp/landing/landing-banner-2.png',
                       },
+                      {
+                        id: '124126',
+                        bannerUrl:
+                          'https://static-images.ifood.com.br/image/upload/t_high,q_100/webapp/landing/landing-banner-3.png',
+                      },
                     ]}
                   />
                 </Section>

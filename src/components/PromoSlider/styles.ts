@@ -17,5 +17,4 @@ export const BannerImage = styled.Image`
   width: 300px;
   height: 160px;
   border-radius: 4px;
-  margin-right: 10px;
 `;
