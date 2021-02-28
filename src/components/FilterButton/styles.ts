@@ -8,7 +8,7 @@ export const FilterButtonContainer = styled.TouchableOpacity<FilterProps>`
   display: flex;
   border-radius: 30px;
   height: 36px;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  background-color: rgba(120, 48, 140, 0.08);
   align-items: center;
   justify-content: center;
   flex-direction: row;

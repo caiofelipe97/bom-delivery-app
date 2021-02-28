@@ -60,6 +60,10 @@ const Home: React.FC = () => {
     dispatch(restaurantsCreators.setFilters('', '', [], 0));
   }, [dispatch]);
 
+  const handleDeliveryAddressPress = useCallback(() => {
+    navigation.navigate('DeliveryAddress');
+  }, [navigation]);
+
   const hasFilter = useMemo(() => {
     return numberOfFilters > 0;
   }, [numberOfFilters]);
@@ -72,7 +76,7 @@ const Home: React.FC = () => {
     <ScrollView contentContainerStyle={isLoading || isEmpty ? { flex: 1 } : {}}>
       <Container>
         <Header>
-          <SearchButton>
+          <SearchButton onPress={handleDeliveryAddressPress}>
             <SearchText numberOfLines={1}>Luiza Bezerra Motta, 720</SearchText>
             <ChevronDownIcon name="chevron-down" size={24} />
           </SearchButton>
