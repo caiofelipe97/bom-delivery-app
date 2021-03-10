@@ -19,7 +19,7 @@ import FilterButton from '../components/FilterButton';
 import Home from '../pages/HomeStack/Home';
 import List from '../pages/HomeStack/List';
 import Filters from '../pages/HomeStack/Filters';
-import DeliveryAddress from '../pages/Common/DeliveryAddress';
+import DeliveryAddress from '../pages/DeliveryAddress';
 import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';

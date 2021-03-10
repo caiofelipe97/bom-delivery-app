@@ -1,6 +1,6 @@
 import React from 'react';
-import SelectedLocationIcon from '../../../../assets/selected-location-icon.svg';
-import PastTimeIcon from '../../../../assets/past-time-icon.svg';
+import SelectedLocationIcon from '../../../assets/selected-location-icon.svg';
+import PastTimeIcon from '../../../assets/past-time-icon.svg';
 
 import {
   Container,
@@ -32,7 +32,7 @@ const DeliveryAddressCard: React.FC<DeliveryAddressCardProps> = ({
         <RegionText>{region}</RegionText>
         <ComplementText>{complement}</ComplementText>
       </TextContainer>
-      <Icon name="ellipsis-v" size={18} />
+      <Icon name="ellipsis-v" size={16} />
     </Container>
   );
 };

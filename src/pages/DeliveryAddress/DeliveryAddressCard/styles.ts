@@ -50,6 +50,6 @@ export const ComplementText = styled.Text`
 export const Icon = styled(FontAwesomeIcon)`
   color: #78308c;
   position: absolute;
-  right: 12;
-  top: 12;
+  right: 12px;
+  top: 12px;
 `;
