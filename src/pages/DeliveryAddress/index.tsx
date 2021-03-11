@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
+import { useNavigation } from '@react-navigation/native';
 
 import GpsIcon from '~/assets/gps-icon.svg';
 import SearchIcon from '~/assets/search-icon.svg';
@@ -24,6 +25,8 @@ const DeliveryAddress: React.FC = () => {
   const [currentLocation, setCurrentLocation] = useState<string | null>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     Geocoder.init('AIzaSyCtEkNUnkbFXMlhhamVOPgPZGm_0PtpEFw'); // use a valid API key
@@ -83,6 +86,10 @@ const DeliveryAddress: React.FC = () => {
     checkPermissions();
   }, []);
 
+  const handleSearchAddress = useCallback(() => {
+    navigation.navigate('SearchAddress');
+  }, [navigation]);
+
   return (
     <Container>
       <InvisibleButton
@@ -93,8 +100,15 @@ const DeliveryAddress: React.FC = () => {
             : currentLocation || 'Ativar localização'
         }
         Icon={GpsIcon}
+        onPress={() => {
+          console.log('Usar localização atual');
+        }}
       />
-      <InvisibleButton title="Pesquisar endereço" Icon={SearchIcon} />
+      <InvisibleButton
+        title="Pesquisar endereço"
+        Icon={SearchIcon}
+        onPress={handleSearchAddress}
+      />
       <DeliveryAddressesContainer>
         <DeliveryAddressCard
           selected

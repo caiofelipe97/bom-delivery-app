@@ -13,15 +13,17 @@ interface InvisibleButtonProps {
   title: string;
   subTitle?: string;
   Icon: React.FC<SvgProps>;
+  onPress(): void;
 }
 
 const InvisibleButton: React.FC<InvisibleButtonProps> = ({
   title,
   subTitle,
   Icon,
+  onPress,
 }) => {
   return (
-    <Container>
+    <Container onPress={onPress}>
       <IconContainer>
         <Icon />
       </IconContainer>

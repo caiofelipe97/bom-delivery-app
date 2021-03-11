@@ -20,6 +20,7 @@ import Home from '../pages/HomeStack/Home';
 import List from '../pages/HomeStack/List';
 import Filters from '../pages/HomeStack/Filters';
 import DeliveryAddress from '../pages/DeliveryAddress';
+import SearchAddress from '../pages/SearchAddress';
 import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';
@@ -30,7 +31,10 @@ type AppStackParamList = {
   Home: undefined;
   List: { category: string | undefined };
   Filters: undefined;
+  DeliveryAddressStack: undefined;
   DeliveryAddress: undefined;
+
+  SearchAddress: undefined;
   Orders: undefined;
   Search: undefined;
   Profile: undefined;
@@ -239,6 +243,43 @@ const HomeTabs: React.FC = () => {
   );
 };
 
+const DeliveryAddressStackNavigator: React.FC = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        cardStyle: { backgroundColor: '#F6F2F8' },
+        ...TransitionPresets.SlideFromRightIOS,
+      }}
+    >
+      <Stack.Screen
+        name="DeliveryAddress"
+        component={DeliveryAddress}
+        options={() => ({
+          title: 'ENDEREÇO DE ENTREGA',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: '#F6F2F8',
+            elevation: 0,
+          },
+          headerTintColor: '#78308C',
+          headerTitleAlign: 'center',
+          headerBackTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleStyle: {
+            color: '#000',
+            fontSize: 18,
+            fontFamily: 'RobotoSlab-Regular',
+          },
+        })}
+      />
+
+      <Stack.Screen name="SearchAddress" component={SearchAddress} />
+    </Stack.Navigator>
+  );
+};
+
 const AppRoutes: React.FC = () => {
   return (
     <Stack.Navigator
@@ -271,26 +312,8 @@ const AppRoutes: React.FC = () => {
         })}
       />
       <Stack.Screen
-        name="DeliveryAddress"
-        component={DeliveryAddress}
-        options={() => ({
-          title: 'ENDEREÇO DE ENTREGA',
-          headerShown: true,
-          headerStyle: {
-            backgroundColor: '#F6F2F8',
-            elevation: 0,
-          },
-          headerTintColor: '#78308C',
-          headerTitleAlign: 'center',
-          headerBackTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerTitleStyle: {
-            color: '#000',
-            fontSize: 18,
-            fontFamily: 'RobotoSlab-Regular',
-          },
-        })}
+        name="DeliveryAddressStack"
+        component={DeliveryAddressStackNavigator}
       />
     </Stack.Navigator>
   );

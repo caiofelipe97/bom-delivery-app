@@ -61,7 +61,7 @@ const Home: React.FC = () => {
   }, [dispatch]);
 
   const handleDeliveryAddressPress = useCallback(() => {
-    navigation.navigate('DeliveryAddress');
+    navigation.navigate('DeliveryAddressStack');
   }, [navigation]);
 
   const hasFilter = useMemo(() => {
