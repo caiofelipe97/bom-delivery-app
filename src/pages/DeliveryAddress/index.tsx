@@ -53,6 +53,7 @@ const DeliveryAddress: React.FC = () => {
         const permissionGranted = await PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
+
         if (permissionGranted) {
           Geolocation.getCurrentPosition(
             async ({ coords }) => {
@@ -63,6 +64,7 @@ const DeliveryAddress: React.FC = () => {
                     coords.latitude,
                     coords.longitude,
                   );
+
                   const { formatted_address } = json.results[0];
                   setCurrentLocation(formatted_address);
                   setLoadingLocation(false);

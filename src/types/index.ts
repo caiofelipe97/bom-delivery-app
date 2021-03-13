@@ -33,3 +33,19 @@ export interface Promotion {
   id: string;
   bannerUrl: string;
 }
+
+export interface UserAddress {
+  main_text: string;
+  secondary_text: string;
+  streetName?: string;
+  streetNumber?: string;
+  district?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  CEP?: string;
+  location: {
+    latitude?: number;
+    longitude?: number;
+  };
+}

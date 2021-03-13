@@ -21,6 +21,7 @@ import List from '../pages/HomeStack/List';
 import Filters from '../pages/HomeStack/Filters';
 import DeliveryAddress from '../pages/DeliveryAddress';
 import SearchAddress from '../pages/SearchAddress';
+import RegisterAddress from '../pages/RegisterAddress';
 import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';
@@ -33,7 +34,7 @@ type AppStackParamList = {
   Filters: undefined;
   DeliveryAddressStack: undefined;
   DeliveryAddress: undefined;
-
+  RegisterAddress: undefined;
   SearchAddress: undefined;
   Orders: undefined;
   Search: undefined;
@@ -276,6 +277,7 @@ const DeliveryAddressStackNavigator: React.FC = () => {
       />
 
       <Stack.Screen name="SearchAddress" component={SearchAddress} />
+      <Stack.Screen name="RegisterAddress" component={RegisterAddress} />
     </Stack.Navigator>
   );
 };
@@ -300,7 +302,7 @@ const AppRoutes: React.FC = () => {
             elevation: 0,
           },
           headerTintColor: '#78308C',
-          headerTitleAlignDeliveryAddress: 'center',
+          headerTitleAlign: 'center',
           headerBackTitleStyle: {
             fontWeight: 'bold',
           },
