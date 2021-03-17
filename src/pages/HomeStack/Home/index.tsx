@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ScrollView } from 'react-native-gesture-handler';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { ApplicationState } from '../../../store';
 import { Creators as restaurantsCreators } from '../../../store/ducks/restaurants/actions';
 

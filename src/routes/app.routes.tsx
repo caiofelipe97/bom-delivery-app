@@ -8,9 +8,9 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { RectButton } from 'react-native-gesture-handler';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
-import { RectButton } from 'react-native-gesture-handler';
 import BackArrow from '../assets/backArrow.png';
 import { Creators as restaurantsCreators } from '../store/ducks/restaurants/actions';
 
@@ -19,9 +19,9 @@ import FilterButton from '../components/FilterButton';
 import Home from '../pages/HomeStack/Home';
 import List from '../pages/HomeStack/List';
 import Filters from '../pages/HomeStack/Filters';
-import DeliveryAddress from '../pages/DeliveryAddress';
-import SearchAddress from '../pages/SearchAddress';
-import RegisterAddress from '../pages/RegisterAddress';
+import DeliveryAddress from '../pages/DeliveryAddressStack/DeliveryAddress';
+import SearchAddress from '../pages/DeliveryAddressStack/SearchAddress';
+import RegisterAddress from '../pages/DeliveryAddressStack/RegisterAddress';
 import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';

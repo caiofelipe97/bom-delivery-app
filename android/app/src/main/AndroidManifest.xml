@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.bomdeliveryapp">
 
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
@@ -11,6 +12,9 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme">
       <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+      <meta-data
+     android:name="com.google.android.geo.API_KEY"
+     android:value="AIzaSyCtEkNUnkbFXMlhhamVOPgPZGm_0PtpEFw"/>
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"

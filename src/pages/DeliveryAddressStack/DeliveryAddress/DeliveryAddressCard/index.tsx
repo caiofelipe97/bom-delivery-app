@@ -1,6 +1,6 @@
 import React from 'react';
-import SelectedLocationIcon from '../../../assets/selected-location-icon.svg';
-import PastTimeIcon from '../../../assets/past-time-icon.svg';
+import SelectedLocationIcon from '~/assets/selected-location-icon.svg';
+import PastTimeIcon from '~/assets/past-time-icon.svg';
 
 import {
   Container,

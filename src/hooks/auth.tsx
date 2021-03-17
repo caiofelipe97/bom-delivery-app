@@ -1,3 +1,6 @@
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import firestore from '@react-native-firebase/firestore';
 import React, {
   createContext,
   useCallback,
@@ -5,9 +8,6 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { LoginManager, AccessToken } from 'react-native-fbsdk';
-import firestore from '@react-native-firebase/firestore';
 import { Alert } from 'react-native';
 import { User } from '~/types';
 

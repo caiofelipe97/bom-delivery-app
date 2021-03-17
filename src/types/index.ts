@@ -45,7 +45,7 @@ export interface UserAddress {
   country?: string;
   CEP?: string;
   location: {
-    latitude?: number;
-    longitude?: number;
+    latitude: number;
+    longitude: number;
   };
 }

@@ -53,7 +53,6 @@ const DeliveryAddress: React.FC = () => {
         const permissionGranted = await PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
-
         if (permissionGranted) {
           Geolocation.getCurrentPosition(
             async ({ coords }) => {
@@ -82,6 +81,8 @@ const DeliveryAddress: React.FC = () => {
             },
             { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 },
           );
+        } else {
+          setLoadingLocation(false);
         }
       }
     };

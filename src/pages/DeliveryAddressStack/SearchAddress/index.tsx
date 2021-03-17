@@ -166,6 +166,7 @@ const SearchAddress: React.FC = () => {
         `;
         setNumber('');
         setLoading(false);
+
         googlePlacesAutocompleteRef.current?.setAddressText('');
         navigation.navigate('RegisterAddress', {
           streetName,
@@ -187,7 +188,7 @@ const SearchAddress: React.FC = () => {
       setNumber('');
       setLoading(false);
       googlePlacesAutocompleteRef.current?.setAddressText('');
-      console.log(err);
+      console.warn(err);
       navigation.navigate('RegisterAddress', {
         ...newAddress,
         streetNumber: number,
@@ -212,6 +213,7 @@ const SearchAddress: React.FC = () => {
           const { main_text, secondary_text } = data.structured_formatting;
           const location = details?.geometry.location;
           const address_components = details?.address_components;
+          console.log(address_components);
           if (
             !address_components ||
             !location ||
@@ -248,6 +250,8 @@ const SearchAddress: React.FC = () => {
                   longitude,
                 },
               });
+            } else if (!latitude || !longitude) {
+              setError(true);
             } else {
               setNewAddress({
                 streetName,
