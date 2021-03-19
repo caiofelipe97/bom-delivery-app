@@ -1,5 +1,7 @@
 import React, { useCallback, useState, useRef } from 'react';
-import { Modal } from 'react-native';
+import { Alert, Modal } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { ActivityIndicator } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +11,7 @@ import {
 } from 'react-native-google-places-autocomplete';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { UserAddress } from '~/types/index';
+import { Creators as deliveryAddressCreators } from '~/store/ducks/deliveryAddress/actions';
 
 import {
   Container,
@@ -25,6 +27,8 @@ import {
   AddressWithoutNumberButton,
   AddressWithoutNumberButtonText,
 } from './styles';
+import { DeliveryAddressState } from '~/store/ducks/deliveryAddress/types';
+import { ApplicationState } from '~/store';
 
 interface GetAddressProps {
   address_components: {
@@ -53,12 +57,15 @@ const SearchAddress: React.FC = () => {
   const googlePlacesAutocompleteRef = useRef<GooglePlacesAutocompleteRef | null>(
     null,
   );
-  const [newAddress, setNewAddress] = useState({} as UserAddress);
   const [number, setNumber] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { newDeliveryAddress } = useSelector<
+    ApplicationState,
+    DeliveryAddressState
+  >(state => state.deliveryAddress);
 
   const getAddress = useCallback(
     ({ address_components, location }: GetAddressProps): AddressAttrs => {
@@ -132,14 +139,18 @@ const SearchAddress: React.FC = () => {
     [],
   );
 
+  const handleShowError = useCallback(() => {
+    googlePlacesAutocompleteRef.current?.setAddressText('');
+    Alert.alert('Endereço inválido', 'Por favor tente novamente.');
+  }, [googlePlacesAutocompleteRef]);
+
   const handleGoBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
   const handleSearchAddressWithNumber = useCallback(async () => {
     Geocoder.init('AIzaSyCtEkNUnkbFXMlhhamVOPgPZGm_0PtpEFw');
-
-    const searchAddress = `${newAddress.main_text}, ${number} - ${newAddress.secondary_text}`;
+    const searchAddress = `${newDeliveryAddress.streetName}, ${number} - ${newDeliveryAddress.secondaryText}`;
     setModalVisible(!modalVisible);
     setLoading(true);
     try {
@@ -159,16 +170,70 @@ const SearchAddress: React.FC = () => {
           location: { latitude, longitude },
         } = getAddress({ address_components, location });
 
-        const main_text = `${streetName}, ${streetNumber}`;
-        const secondary_text = `${district ? `${district}, ` : ''}${
+        let main_text = newDeliveryAddress.mainAddress;
+        if (streetNumber) {
+          main_text = `${streetName}, ${streetNumber}`;
+        } else {
+          main_text = `${streetName}, ${number}`;
+        }
+        const secondaryText = `${district ? `${district}, ` : ''}${
           city ? `${city} - ` : ''
-        }${state ? `${state}, ` : ''}${country ? `${country}` : ''}
+        }${state ? `${state}` : ''}
         `;
+
         setNumber('');
         setLoading(false);
-
+        console.log(number);
         googlePlacesAutocompleteRef.current?.setAddressText('');
-        navigation.navigate('RegisterAddress', {
+        dispatch(
+          deliveryAddressCreators.setNewDeliveryAddress({
+            mainAddress: main_text,
+            mainText: main_text,
+            secondaryText,
+            streetName,
+            streetNumber: streetNumber || number,
+            noNumber: !!streetNumber,
+            district,
+            city,
+            addressType: 'street',
+            state,
+            country,
+            CEP,
+            location: {
+              latitude,
+              longitude,
+            },
+          }),
+        );
+        navigation.navigate('RegisterAddress');
+      }
+    } catch (err) {
+      setNumber('');
+      setLoading(false);
+      googlePlacesAutocompleteRef.current?.setAddressText('');
+      handleShowError();
+    }
+  }, [
+    dispatch,
+    getAddress,
+    handleShowError,
+    modalVisible,
+    navigation,
+    newDeliveryAddress.mainAddress,
+    newDeliveryAddress.secondaryText,
+    newDeliveryAddress.streetName,
+    number,
+  ]);
+
+  const handleOnPress = useCallback(
+    (data, details = null) => {
+      const { main_text } = data.structured_formatting;
+      const location = details?.geometry.location;
+      const address_components = details?.address_components;
+      if (!address_components || !location || !location.lat || !location.lng) {
+        handleShowError();
+      } else {
+        const {
           streetName,
           streetNumber,
           district,
@@ -176,25 +241,77 @@ const SearchAddress: React.FC = () => {
           state,
           country,
           CEP,
-          main_text,
-          secondary_text,
-          location: {
-            latitude,
-            longitude,
-          },
-        });
+          location: { latitude, longitude },
+        } = getAddress({ address_components, location });
+        let addressType;
+        if (streetName && main_text.includes(streetName)) {
+          addressType = 'street';
+        } else {
+          addressType = 'place';
+        }
+        if (!latitude || !longitude || !streetName) {
+          handleShowError();
+        } else if (streetNumber) {
+          const noNumber = streetNumber === 'S/N';
+          const mainText = `${streetName}${`, ${streetNumber}`}`;
+          const secondaryText = `${district ? `${district}, ` : ''}${
+            city ? `${city} - ` : ''
+          }${state ? `${state}` : ''}
+        `;
+          googlePlacesAutocompleteRef.current?.setAddressText('');
+          dispatch(
+            deliveryAddressCreators.setNewDeliveryAddress({
+              mainAddress: main_text,
+              mainText,
+              secondaryText,
+              streetName,
+              streetNumber,
+              noNumber,
+              district,
+              city,
+              state,
+              country,
+              addressType,
+              CEP,
+              location: {
+                latitude,
+                longitude,
+              },
+            }),
+          );
+          navigation.navigate('RegisterAddress');
+        } else {
+          const mainText = `${streetName}`;
+          const secondaryText = `${district ? `${district}, ` : ''}${
+            city ? `${city} - ` : ''
+          }${state ? `${state}` : ''}
+        `;
+          dispatch(
+            deliveryAddressCreators.setNewDeliveryAddress({
+              mainAddress: main_text,
+              mainText,
+              secondaryText,
+              streetName,
+              streetNumber,
+              district,
+              noNumber: true,
+              city,
+              state,
+              country,
+              addressType,
+              CEP,
+              location: {
+                latitude,
+                longitude,
+              },
+            }),
+          );
+          setModalVisible(true);
+        }
       }
-    } catch (err) {
-      setNumber('');
-      setLoading(false);
-      googlePlacesAutocompleteRef.current?.setAddressText('');
-      console.warn(err);
-      navigation.navigate('RegisterAddress', {
-        ...newAddress,
-        streetNumber: number,
-      });
-    }
-  }, [getAddress, modalVisible, navigation, newAddress, number]);
+    },
+    [dispatch, getAddress, handleShowError, navigation],
+  );
 
   return (
     <Container>
@@ -209,67 +326,7 @@ const SearchAddress: React.FC = () => {
             <FeatherIcon name="chevron-left" size={24} color="#78308C" />
           </BackButton>
         )}
-        onPress={(data, details = null) => {
-          const { main_text, secondary_text } = data.structured_formatting;
-          const location = details?.geometry.location;
-          const address_components = details?.address_components;
-          console.log(address_components);
-          if (
-            !address_components ||
-            !location ||
-            !location.lat ||
-            !location.lng
-          ) {
-            setError(true);
-          } else {
-            setError(false);
-            const {
-              streetName,
-              streetNumber,
-              district,
-              city,
-              state,
-              country,
-              CEP,
-              location: { latitude, longitude },
-            } = getAddress({ address_components, location });
-            if (streetNumber) {
-              googlePlacesAutocompleteRef.current?.setAddressText('');
-              navigation.navigate('RegisterAddress', {
-                streetName,
-                streetNumber,
-                district,
-                city,
-                state,
-                country,
-                CEP,
-                main_text,
-                secondary_text,
-                location: {
-                  latitude,
-                  longitude,
-                },
-              });
-            } else if (!latitude || !longitude) {
-              setError(true);
-            } else {
-              setNewAddress({
-                streetName,
-                district,
-                city,
-                state,
-                country,
-                main_text,
-                secondary_text,
-                location: {
-                  latitude,
-                  longitude,
-                },
-              });
-              setModalVisible(true);
-            }
-          }
-        }}
+        onPress={handleOnPress}
         query={{
           key: 'AIzaSyCtEkNUnkbFXMlhhamVOPgPZGm_0PtpEFw',
           language: 'pt',
@@ -314,9 +371,11 @@ const SearchAddress: React.FC = () => {
             }}
           >
             <ModalTitle>Preencha o número do endereço</ModalTitle>
-            <AddressMainText>{newAddress.main_text},</AddressMainText>
+            <AddressMainText>
+              {newDeliveryAddress.mainAddress},{number}
+            </AddressMainText>
             <AddressSecundaryText>
-              {newAddress.secondary_text}
+              {newDeliveryAddress.secondaryText}
             </AddressSecundaryText>
             <NumberTextInput
               maxLength={4}
@@ -341,7 +400,6 @@ const SearchAddress: React.FC = () => {
                 Buscar com número
               </SearchWithNumberButtonText>
             </SearchWithNumberButton>
-
             <AddressWithoutNumberButton
               style={{
                 elevation: 2,
@@ -350,7 +408,7 @@ const SearchAddress: React.FC = () => {
                 setModalVisible(!modalVisible);
                 setNumber('');
                 googlePlacesAutocompleteRef.current?.setAddressText('');
-                navigation.navigate('RegisterAddress', newAddress);
+                navigation.navigate('RegisterAddress');
               }}
             >
               <AddressWithoutNumberButtonText>

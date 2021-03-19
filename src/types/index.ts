@@ -35,10 +35,14 @@ export interface Promotion {
 }
 
 export interface UserAddress {
-  main_text: string;
-  secondary_text: string;
+  mainAddress: string;
+  mainText: string;
+  secondaryText: string;
   streetName?: string;
   streetNumber?: string;
+  noNumber?: boolean;
+  wrongNumber?: boolean;
+  addressType?: 'place' | 'street';
   district?: string;
   city?: string;
   state?: string;

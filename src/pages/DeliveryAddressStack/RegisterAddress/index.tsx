@@ -1,41 +1,59 @@
-import React from 'react';
-import { Text, Dimensions, StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, Dimensions, StatusBar, Image } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useRoute } from '@react-navigation/native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { TextInput } from 'react-native-gesture-handler';
+import { ApplicationState } from '~/store';
+import { DeliveryAddressState } from '~/store/ducks/deliveryAddress/types';
+import PurpleMarker from '~/assets/purpleMarker.png';
 
-import { Container } from './styles';
+import {
+  Container,
+  FixedTopView,
+  LinearGradientView,
+  RegisterAddressContainer,
+  AddressContainer,
+  MainAddressText,
+  AddressText,
+  SecondaryAddressText,
+  ComplementContainer,
+  TextInputContainer,
+  Label,
+} from './styles';
+import Button from '~/components/Button';
 
 const { width, height } = Dimensions.get('window');
 
-interface RouteParams {
-  main_text: string;
-  secondary_text: string;
-  streetName?: string;
-  streetNumber?: string;
-  district?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  location: {
-    latitude?: number;
-    longitude?: number;
-  };
-}
-
 const RegisterAddress: React.FC = () => {
-  const { params } = useRoute();
-  const { main_text, secondary_text, location } = params as RouteParams;
+  const [number, setNumber] = useState('');
+  const [complement, setComplement] = useState('');
+  const [referencePoint, setReferencePoint] = useState('');
+
+  const { newDeliveryAddress } = useSelector<
+    ApplicationState,
+    DeliveryAddressState
+  >(state => state.deliveryAddress);
+
+  useEffect(() => {
+    if (newDeliveryAddress.streetNumber)
+      setNumber(newDeliveryAddress.streetNumber);
+  }, [newDeliveryAddress.streetNumber]);
 
   return (
     <Container>
+      <FixedTopView>
+        <LinearGradientView colors={['#F6F2F8', 'transparent']} />
+      </FixedTopView>
       <MapView
+        zoomEnabled={false}
+        scrollEnabled={false}
         provider={PROVIDER_GOOGLE}
         initialRegion={{
-          latitude: location?.latitude || -7.060714,
-          longitude: location?.longitude || -35.763305,
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
+          latitude: newDeliveryAddress.location.latitude,
+          longitude: newDeliveryAddress.location.longitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
         }}
         style={{
           alignSelf: 'flex-start',
@@ -46,15 +64,64 @@ const RegisterAddress: React.FC = () => {
       >
         <Marker
           coordinate={{
-            latitude: location?.latitude || -7.060714,
-            longitude: location?.longitude || -35.763305,
+            latitude: newDeliveryAddress.location.latitude || -7.060714,
+            longitude: newDeliveryAddress.location.longitude || -35.763305,
           }}
-        />
+        >
+          <Image source={PurpleMarker} style={{ width: 40, height: 40 }} />
+        </Marker>
       </MapView>
-      <Text>{main_text}</Text>
-      <Text>{secondary_text}</Text>
-      <Text>Latitude: {location?.latitude?.toFixed(7)}</Text>
-      <Text>Longitude: {location?.longitude?.toFixed(7)}</Text>
+      <RegisterAddressContainer>
+        <AddressContainer>
+          <MainAddressText>{newDeliveryAddress.mainAddress}</MainAddressText>
+          {newDeliveryAddress.addressType === 'place' && (
+            <AddressText>
+              {newDeliveryAddress.streetName}, {number}
+            </AddressText>
+          )}
+          <SecondaryAddressText>
+            {newDeliveryAddress.secondaryText}
+          </SecondaryAddressText>
+        </AddressContainer>
+
+        <ComplementContainer>
+          <TextInputContainer>
+            <Label>Número</Label>
+            <TextInput
+              placeholder="Número"
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: '#adadad',
+                paddingBottom: 0,
+              }}
+            />
+          </TextInputContainer>
+          <TextInputContainer>
+            <Label>Complemento</Label>
+            <TextInput
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: '#adadad',
+                paddingBottom: 0,
+              }}
+            />
+          </TextInputContainer>
+        </ComplementContainer>
+        <TextInputContainer>
+          <Label>Ponto de referência</Label>
+          <TextInput
+            value={referencePoint}
+            onChangeText={text => setReferencePoint(text)}
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: '#adadad',
+              paddingBottom: 0,
+            }}
+          />
+        </TextInputContainer>
+
+        <Button>Salvar endereço</Button>
+      </RegisterAddressContainer>
     </Container>
   );
 };
