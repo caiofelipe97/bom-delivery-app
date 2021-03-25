@@ -2,7 +2,13 @@ import React, { useCallback, useState, useRef } from 'react';
 import { Alert, Modal } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ActivityIndicator } from 'react-native';
+import {
+  ActivityIndicator,
+  View,
+  Text,
+  StatusBar,
+  Dimensions,
+} from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -11,11 +17,15 @@ import {
 } from 'react-native-google-places-autocomplete';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Creators as deliveryAddressCreators } from '~/store/ducks/deliveryAddress/actions';
 
 import {
   Container,
+  BackButtonContainer,
   BackButton,
+  AddressContainer,
+  AddressInfoContainer,
   ModalContainer,
   ModalContent,
   ModalTitle,
@@ -60,6 +70,8 @@ const SearchAddress: React.FC = () => {
   const [number, setNumber] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [notFound, setNotFound] = useState(false);
+  const [timeOut, setTimeOut] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { newDeliveryAddress } = useSelector<
@@ -183,7 +195,6 @@ const SearchAddress: React.FC = () => {
 
         setNumber('');
         setLoading(false);
-        console.log(number);
         googlePlacesAutocompleteRef.current?.setAddressText('');
         dispatch(
           deliveryAddressCreators.setNewDeliveryAddress({
@@ -205,7 +216,7 @@ const SearchAddress: React.FC = () => {
             },
           }),
         );
-        navigation.navigate('RegisterAddress');
+        navigation.navigate('ConfirmAddress');
       }
     } catch (err) {
       setNumber('');
@@ -279,7 +290,7 @@ const SearchAddress: React.FC = () => {
               },
             }),
           );
-          navigation.navigate('RegisterAddress');
+          navigation.navigate('ConfirmAddress');
         } else {
           const mainText = `${streetName}`;
           const secondaryText = `${district ? `${district}, ` : ''}${
@@ -313,31 +324,144 @@ const SearchAddress: React.FC = () => {
     [dispatch, getAddress, handleShowError, navigation],
   );
 
+  const handleOnNotFound = useCallback(() => {
+    console.log('handleOnNotFound');
+    setNotFound(true);
+  }, []);
+
+  const handleOnTimeout = useCallback(() => {
+    console.log('handleOnTimeout');
+    setTimeOut(true);
+  }, []);
+
   return (
     <Container>
       <GooglePlacesAutocomplete
         autoFillOnNotFound
+        isRowScrollable={false}
         ref={googlePlacesAutocompleteRef}
         placeholder="Endereço e número"
         fetchDetails
-        listViewDisplayed="auto"
+        onNotFound={handleOnNotFound}
+        onTimeout={handleOnTimeout}
+        keyboardShouldPersistTaps="always"
+        renderRow={rowData => {
+          const title = rowData.structured_formatting.main_text;
+          const address = rowData.structured_formatting.secondary_text;
+          return (
+            <AddressContainer style={{ backgroundColor: 'transparent' }}>
+              <FeatherIcon name="map-pin" size={18} color="#7e7e7e" />
+              <AddressInfoContainer>
+                <Text
+                  style={{
+                    fontFamily: 'RobotoSlab-Regular',
+                    fontSize: 14,
+                    color: '#303030',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  {title}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'RobotoSlab-Regular',
+                    fontSize: 14,
+                    color: '#7e7e7e',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  {address}
+                </Text>
+              </AddressInfoContainer>
+            </AddressContainer>
+          );
+        }}
+        listEmptyComponent={() => (
+          <View
+            style={{
+              flex: 1,
+              width: '70%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+              marginTop: '45%',
+            }}
+          >
+            <Text
+              style={{
+                textAlign: 'center',
+                fontFamily: 'RobotoSlab-Medium',
+                fontSize: 14,
+                color: '#303030',
+              }}
+            >
+              Não encontramos esse endereço
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontFamily: 'RobotoSlab-Regular',
+                fontSize: 14,
+                color: '#7e7e7e',
+                marginVertical: 10,
+              }}
+            >
+              Verifique o que você digitou e tente novamente. Ou busque pelo
+              mapa.
+            </Text>
+            <TouchableOpacity style={{ padding: 10 }}>
+              <Text
+                style={{
+                  color: '#78308c',
+                  fontFamily: 'RobotoSlab-Medium',
+                  fontSize: 14,
+                }}
+              >
+                Buscar pelo mapa
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         renderLeftButton={() => (
-          <BackButton onPress={() => handleGoBack()}>
-            <FeatherIcon name="chevron-left" size={24} color="#78308C" />
-          </BackButton>
+          <BackButtonContainer>
+            <BackButton onPress={() => handleGoBack()}>
+              <FeatherIcon name="chevron-left" size={24} color="#78308C" />
+            </BackButton>
+          </BackButtonContainer>
         )}
         onPress={handleOnPress}
         query={{
           key: 'AIzaSyCtEkNUnkbFXMlhhamVOPgPZGm_0PtpEFw',
           language: 'pt',
           location: '-7.060714, -35.763305',
-          radius: '50000',
+          radius: '5000',
           strictbounds: true,
         }}
         styles={{
+          container: {
+            flex: 1,
+
+            paddingTop: StatusBar.currentHeight
+              ? StatusBar.currentHeight + 10
+              : 32,
+            paddingHorizontal: 12,
+          },
           textInput: {
             color: '#363433',
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0,
             fontFamily: 'RobotoSlab-Regular',
+          },
+          poweredContainer: {
+            backgroundColor: 'transparent',
+          },
+          row: {
+            backgroundColor: 'transparent',
+          },
+          loader: {
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            height: 20,
           },
         }}
       />
@@ -408,7 +532,7 @@ const SearchAddress: React.FC = () => {
                 setModalVisible(!modalVisible);
                 setNumber('');
                 googlePlacesAutocompleteRef.current?.setAddressText('');
-                navigation.navigate('RegisterAddress');
+                navigation.navigate('ConfirmAddress');
               }}
             >
               <AddressWithoutNumberButtonText>
@@ -418,6 +542,20 @@ const SearchAddress: React.FC = () => {
           </ModalContent>
         </ModalContainer>
       </Modal>
+      {notFound ||
+        (timeOut && (
+          <TouchableOpacity style={{ padding: 10 }}>
+            <Text
+              style={{
+                color: '#78308c',
+                fontFamily: 'RobotoSlab-Medium',
+                fontSize: 14,
+              }}
+            >
+              Buscar pelo mapa
+            </Text>
+          </TouchableOpacity>
+        ))}
     </Container>
   );
 };

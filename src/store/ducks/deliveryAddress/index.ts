@@ -15,10 +15,12 @@ interface setNewDeliveryAddressPayload {
 const setNewDeliveryAddress = (
   state = initialState,
   { deliveryAddress }: setNewDeliveryAddressPayload,
-): DeliveryAddressState => ({
-  ...state,
-  newDeliveryAddress: deliveryAddress,
-});
+): DeliveryAddressState => {
+  return {
+    ...state,
+    newDeliveryAddress: deliveryAddress,
+  };
+};
 
 const deliveryAddress = {
   [Types.SET_NEW_DELIVERY_ADDRESS]: setNewDeliveryAddress,

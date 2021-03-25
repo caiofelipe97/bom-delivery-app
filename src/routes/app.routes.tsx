@@ -22,6 +22,7 @@ import Filters from '../pages/HomeStack/Filters';
 import DeliveryAddress from '../pages/DeliveryAddressStack/DeliveryAddress';
 import SearchAddress from '../pages/DeliveryAddressStack/SearchAddress';
 import RegisterAddress from '../pages/DeliveryAddressStack/RegisterAddress';
+import ConfirmAddress from '~/pages/DeliveryAddressStack/ConfirmAddress';
 import Orders from '../pages/OrderStack/Orders';
 import Search from '../pages/SearchStack/Search';
 import Profile from '../pages/ProfileStack/Profile';
@@ -277,6 +278,7 @@ const DeliveryAddressStackNavigator: React.FC = () => {
       />
 
       <Stack.Screen name="SearchAddress" component={SearchAddress} />
+      <Stack.Screen name="ConfirmAddress" component={ConfirmAddress} />
       <Stack.Screen name="RegisterAddress" component={RegisterAddress} />
     </Stack.Navigator>
   );

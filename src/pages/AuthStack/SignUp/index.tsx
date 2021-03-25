@@ -13,7 +13,7 @@ import nameImg from '../../../assets/name.png';
 import Input from '../../../components/Input';
 import InputMask from '../../../components/InputMask';
 import Button from '../../../components/Button';
-import getValidationErrors from '../../../utils/getValidationErrors';
+import getValidationErrors from '~/utils/getValidationErrors';
 import api from '../../../services/api';
 
 interface RouteParams {
