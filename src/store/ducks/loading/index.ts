@@ -9,11 +9,13 @@ const initialState: LoadingState = {
 };
 
 // Reducer Handlers
-const start = (state = initialState) => ({
-  ...state,
-  loadingProcesses: state.loadingProcesses + 1,
-  loading: true,
-});
+const start = (state = initialState) => {
+  return {
+    ...state,
+    loadingProcesses: state.loadingProcesses + 1,
+    loading: true,
+  };
+};
 
 const stop = (state = initialState) => {
   if (state.loadingProcesses > 1) {

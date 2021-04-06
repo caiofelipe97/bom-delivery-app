@@ -35,13 +35,14 @@ export interface Promotion {
 }
 
 export interface UserAddress {
+  id?: string;
   mainAddress: string;
   mainText: string;
   secondaryText: string;
   streetName?: string;
   streetNumber?: string;
   noNumber?: boolean;
-  wrongNumber?: boolean;
+  referencePoint?: string;
   addressType?: 'place' | 'street';
   district?: string;
   city?: string;
@@ -52,4 +53,5 @@ export interface UserAddress {
     latitude: number;
     longitude: number;
   };
+  userId: string;
 }

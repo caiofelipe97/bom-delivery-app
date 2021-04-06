@@ -1,5 +1,4 @@
-import { takeLatest, put, call, all } from 'redux-saga/effects';
-import { number } from 'yup';
+import { takeLatest, put, call, all } from 'typed-redux-saga';
 import { Restaurant } from '~/types';
 import {
   Creators as restaurantsCreators,
@@ -9,12 +8,11 @@ import {
 import { Creators as loadingCreators } from '../loading/actions';
 
 import { getAll, getByCategory, getByFilters } from './service';
-import store from '~/store';
 
 function* getAllRestaurants() {
   try {
     yield put(loadingCreators.start());
-    const data = yield call(getAll);
+    const data = yield* call(getAll);
     yield put(restaurantsCreators.successGetAllRestaurants(data));
     yield put(loadingCreators.stop());
   } catch (error) {
@@ -31,7 +29,7 @@ function* getRestaurantsByCategory({
 }: getRestaurantsByCategoryProps) {
   try {
     yield put(loadingCreators.start());
-    const data = yield call(getByCategory, category);
+    const data = yield* call(getByCategory, category);
     yield put(restaurantsCreators.successGetFilteredRestaurants(data));
     yield put(loadingCreators.stop());
   } catch (error) {
@@ -54,7 +52,7 @@ function* getFilteredRestaurants({
 }: getFilteredRestaurantsProps) {
   try {
     yield put(loadingCreators.start());
-    let data = yield call(
+    let data = yield* call(
       getByFilters,
       sortFilter,
       paymentMethodFilter,
@@ -97,7 +95,7 @@ function* getFilteredRestaurants({
 }
 
 export function* restaurants() {
-  return yield all([
+  return yield* all([
     takeLatest(restaurantsTypes.GET_ALL_RESTAURANTS, getAllRestaurants),
     takeLatest(
       restaurantsTypes.GET_RESTAURANTS_BY_CATEGORY,

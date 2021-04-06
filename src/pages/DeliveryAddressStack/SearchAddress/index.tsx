@@ -39,6 +39,7 @@ import {
 } from './styles';
 import { DeliveryAddressState } from '~/store/ducks/deliveryAddress/types';
 import { ApplicationState } from '~/store';
+import { useAuth } from '~/hooks/auth';
 
 interface GetAddressProps {
   address_components: {
@@ -74,6 +75,8 @@ const SearchAddress: React.FC = () => {
   const [timeOut, setTimeOut] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { user } = useAuth();
+
   const { newDeliveryAddress } = useSelector<
     ApplicationState,
     DeliveryAddressState
@@ -190,8 +193,7 @@ const SearchAddress: React.FC = () => {
         }
         const secondaryText = `${district ? `${district}, ` : ''}${
           city ? `${city} - ` : ''
-        }${state ? `${state}` : ''}
-        `;
+        }${state ? `${state}` : ''}`;
 
         setNumber('');
         setLoading(false);
@@ -214,6 +216,7 @@ const SearchAddress: React.FC = () => {
               latitude,
               longitude,
             },
+            userId: user?.id,
           }),
         );
         navigation.navigate('ConfirmAddress');
@@ -234,6 +237,7 @@ const SearchAddress: React.FC = () => {
     newDeliveryAddress.secondaryText,
     newDeliveryAddress.streetName,
     number,
+    user,
   ]);
 
   const handleOnPress = useCallback(
@@ -267,8 +271,7 @@ const SearchAddress: React.FC = () => {
           const mainText = `${streetName}${`, ${streetNumber}`}`;
           const secondaryText = `${district ? `${district}, ` : ''}${
             city ? `${city} - ` : ''
-          }${state ? `${state}` : ''}
-        `;
+          }${state ? `${state}` : ''}`;
           googlePlacesAutocompleteRef.current?.setAddressText('');
           dispatch(
             deliveryAddressCreators.setNewDeliveryAddress({
@@ -288,6 +291,7 @@ const SearchAddress: React.FC = () => {
                 latitude,
                 longitude,
               },
+              userId: user?.id,
             }),
           );
           navigation.navigate('ConfirmAddress');
@@ -295,8 +299,7 @@ const SearchAddress: React.FC = () => {
           const mainText = `${streetName}`;
           const secondaryText = `${district ? `${district}, ` : ''}${
             city ? `${city} - ` : ''
-          }${state ? `${state}` : ''}
-        `;
+          }${state ? `${state}` : ''}`;
           dispatch(
             deliveryAddressCreators.setNewDeliveryAddress({
               mainAddress: main_text,
@@ -315,13 +318,14 @@ const SearchAddress: React.FC = () => {
                 latitude,
                 longitude,
               },
+              userId: user?.id,
             }),
           );
           setModalVisible(true);
         }
       }
     },
-    [dispatch, getAddress, handleShowError, navigation],
+    [dispatch, getAddress, handleShowError, navigation, user],
   );
 
   const handleOnNotFound = useCallback(() => {
@@ -434,7 +438,7 @@ const SearchAddress: React.FC = () => {
           key: 'AIzaSyCtEkNUnkbFXMlhhamVOPgPZGm_0PtpEFw',
           language: 'pt',
           location: '-7.060714, -35.763305',
-          radius: '5000',
+          radius: '2000',
           strictbounds: true,
         }}
         styles={{

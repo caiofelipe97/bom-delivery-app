@@ -98,12 +98,11 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
           {...rest}
         />
       </Content>
-      {!!helperText ||
-        (!!error && (
-          <HelperText isFocused={isFocused} isErrored={!!error}>
-            {error || helperText}
-          </HelperText>
-        ))}
+      {(!!helperText || !!error) && (
+        <HelperText isFocused={isFocused} isErrored={!!error}>
+          {error || helperText}
+        </HelperText>
+      )}
     </Container>
   );
 };

@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { Creators as deliveryAddressActions } from '~/store/ducks/deliveryAddress/actions';
 import GpsIcon from '~/assets/gps-icon.svg';
 import SearchIcon from '~/assets/search-icon.svg';
 import InvisibleButton from './InvisibleButton';
 import DeliveryAddressCard from './DeliveryAddressCard';
 
 import { Container, DeliveryAddressesContainer } from './styles';
+import { DeliveryAddressState } from '~/store/ducks/deliveryAddress/types';
+import { ApplicationState } from '~/store';
 
 interface Coordinates {
   latitude: number;
@@ -25,7 +28,12 @@ const DeliveryAddress: React.FC = () => {
   const [currentLocation, setCurrentLocation] = useState<string | null>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+  const { userAddresses, selectedDeliveryAddress } = useSelector<
+    ApplicationState,
+    DeliveryAddressState
+  >(state => state.deliveryAddress);
 
+  const dispatch = useDispatch();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -89,9 +97,42 @@ const DeliveryAddress: React.FC = () => {
     checkPermissions();
   }, []);
 
+  console.log(userAddresses);
+
   const handleSearchAddress = useCallback(() => {
     navigation.navigate('SearchAddress');
   }, [navigation]);
+
+  const handleOnSelectDeliveryAddress = useCallback(
+    userDeliveryAddress => {
+      dispatch(
+        deliveryAddressActions.setSelectedDeliveryAddress(userDeliveryAddress),
+      );
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{ name: 'Home' }],
+        }),
+      );
+    },
+    [dispatch, navigation],
+  );
+
+  const orderedUserAddresses = useMemo(() => {
+    if (selectedDeliveryAddress?.id) {
+      const findSelectedUserAddress = userAddresses.find(
+        userAddress => userAddress.id === selectedDeliveryAddress.id,
+      );
+      const filteredUserAddresses = userAddresses.filter(
+        userAddress => userAddress.id !== selectedDeliveryAddress.id,
+      );
+      if (findSelectedUserAddress) {
+        return [findSelectedUserAddress, ...filteredUserAddresses];
+      }
+      return userAddresses;
+    }
+    return userAddresses;
+  }, [userAddresses, selectedDeliveryAddress]);
 
   return (
     <Container>
@@ -113,27 +154,26 @@ const DeliveryAddress: React.FC = () => {
         onPress={handleSearchAddress}
       />
       <DeliveryAddressesContainer>
-        <DeliveryAddressCard
-          selected
-          address="R. Maria Lima, 33"
-          region="Alagoa Nova - PB"
-          complement="Próximo ao colégio Monsenhor Borges"
-        />
-        <DeliveryAddressCard
-          address="R. Álvaro Machado, 130"
-          region="Alagoa Nova - PB"
-          complement="Rádio Piráua FM"
-        />
-        <DeliveryAddressCard
-          address="R. Ver. Clementino Leite, 131"
-          region="Alagoa Nova - PB"
-          complement="Ao lado do cartório"
-        />
-        <DeliveryAddressCard
-          address="R. Luiza Bezerra Mota, 720"
-          region="Campina Grande - PB"
-          complement="Rua do Motiva"
-        />
+        {orderedUserAddresses.map(userDeliveryAddress => (
+          <DeliveryAddressCard
+            key={userDeliveryAddress.id}
+            address={
+              userDeliveryAddress.addressType === 'place'
+                ? userDeliveryAddress.mainAddress
+                : userDeliveryAddress.mainText
+            }
+            region={
+              userDeliveryAddress.addressType === 'place'
+                ? `${userDeliveryAddress.mainText} - ${userDeliveryAddress.secondaryText}`
+                : userDeliveryAddress.secondaryText
+            }
+            complement={userDeliveryAddress.referencePoint}
+            selected={selectedDeliveryAddress.id === userDeliveryAddress.id}
+            handleOnSelect={() =>
+              handleOnSelectDeliveryAddress(userDeliveryAddress)
+            }
+          />
+        ))}
       </DeliveryAddressesContainer>
     </Container>
   );

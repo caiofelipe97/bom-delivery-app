@@ -45,7 +45,6 @@ const AuthProvider: React.FC = ({ children }) => {
       firebaseUser: FirebaseAuthTypes.User | null,
     ): Promise<void> {
       if (firebaseUser) {
-        console.log(firebaseUser);
         const facebookLogin = firebaseUser.providerData.find(
           userProviderData => userProviderData.providerId === 'facebook.com',
         );

@@ -16,6 +16,7 @@ interface DeliveryAddressCardProps {
   region: string;
   complement?: string;
   selected?: boolean;
+  handleOnSelect: () => void;
 }
 
 const DeliveryAddressCard: React.FC<DeliveryAddressCardProps> = ({
@@ -23,9 +24,10 @@ const DeliveryAddressCard: React.FC<DeliveryAddressCardProps> = ({
   region,
   complement,
   selected,
+  handleOnSelect,
 }) => {
   return (
-    <Container selected={selected}>
+    <Container selected={selected} onPress={handleOnSelect}>
       {selected ? <SelectedLocationIcon /> : <PastTimeIcon />}
       <TextContainer>
         <AddressText>{address}</AddressText>

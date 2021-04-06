@@ -92,8 +92,6 @@ const InputMask: React.RefForwardingComponent<InputRef, InputProps> = (
         onBlur={handleInputBlur}
         value={inputValue}
         onChangeText={(text, rawText) => {
-          console.log(rawText);
-
           inputValueRef.current.value = text;
           setInputValue(text);
         }}

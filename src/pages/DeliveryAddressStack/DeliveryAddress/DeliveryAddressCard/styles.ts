@@ -6,7 +6,7 @@ interface SelectedProps {
 }
 
 export const Container = styled.TouchableOpacity<SelectedProps>`
-  padding: 12px;
+  padding: 16px;
   width: 100%;
   flex-direction: row;
   align-items: center;
@@ -40,7 +40,9 @@ export const RegionText = styled.Text`
   font-family: 'RobotoSlab-Regular';
   color: #7e7e7e;
   font-size: 12px;
+  margin-top: 4px;
 `;
+
 export const ComplementText = styled.Text`
   font-family: 'RobotoSlab-Regular';
   color: #7e7e7e;
@@ -50,6 +52,6 @@ export const ComplementText = styled.Text`
 export const Icon = styled(FontAwesomeIcon)`
   color: #78308c;
   position: absolute;
-  right: 12px;
-  top: 12px;
+  right: 16px;
+  top: 16px;
 `;

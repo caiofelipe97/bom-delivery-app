@@ -5,6 +5,7 @@ import { ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ApplicationState } from '../../../store';
 import { Creators as restaurantsCreators } from '../../../store/ducks/restaurants/actions';
+import { Creators as deliveryAddressCreators } from '../../../store/ducks/deliveryAddress/actions';
 
 import FilterButton from '../../../components/FilterButton';
 import Section from '../../../components/Section';
@@ -23,15 +24,23 @@ import {
   ClearFiltersText,
 } from './styles';
 import { RestaurantsState } from '~/store/ducks/restaurants/types';
+import { DeliveryAddressState } from '~/store/ducks/deliveryAddress/types';
+import { useAuth } from '~/hooks/auth';
 
 const Home: React.FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const { user } = useAuth();
 
   const { allRestaurants, numberOfFilters } = useSelector<
     ApplicationState,
     RestaurantsState
   >(state => state.restaurants);
+
+  const { selectedDeliveryAddress } = useSelector<
+    ApplicationState,
+    DeliveryAddressState
+  >(state => state.deliveryAddress);
 
   const isLoading = useSelector<ApplicationState, boolean>(
     state => state.loading.loading,
@@ -41,6 +50,13 @@ const Home: React.FC = () => {
     dispatch(restaurantsCreators.setFilters('', '', [], 0));
     dispatch(restaurantsCreators.getAllRestaurants());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user?.id)
+      dispatch(
+        deliveryAddressCreators.getUserDeliveryAddressListRequest(user.id),
+      );
+  }, [dispatch, user]);
 
   const handleCategoryFilter = useCallback(
     category => {
@@ -77,7 +93,11 @@ const Home: React.FC = () => {
       <Container>
         <Header>
           <SearchButton onPress={handleDeliveryAddressPress}>
-            <SearchText numberOfLines={1}>Luiza Bezerra Motta, 720</SearchText>
+            <SearchText numberOfLines={1}>
+              {selectedDeliveryAddress?.mainText
+                ? selectedDeliveryAddress.mainText
+                : 'Alagoa Nova - PB'}
+            </SearchText>
             <ChevronDownIcon name="chevron-down" size={24} />
           </SearchButton>
           <FilterButton

@@ -44,7 +44,6 @@ const SignUp: React.FC = () => {
     async (data: SignUpFormData) => {
       try {
         formRef.current?.setErrors({});
-        console.log(data);
         const schema = Yup.object().shape({
           name: Yup.string()
             .min(2, 'O nome deve ter no mínimo 2 caracteres.')

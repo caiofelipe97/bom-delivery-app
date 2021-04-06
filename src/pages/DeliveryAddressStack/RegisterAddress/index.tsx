@@ -5,15 +5,17 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import { Dimensions, StatusBar, Image, Alert, Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { Dimensions, StatusBar, Image, Keyboard } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 
 import * as Yup from 'yup';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { useAuth } from '~/hooks/auth';
+import { Creators as deliveryAddressActions } from '~/store/ducks/deliveryAddress/actions';
 import { ApplicationState } from '~/store';
 import { DeliveryAddressState } from '~/store/ducks/deliveryAddress/types';
 import PurpleMarker from '~/assets/purpleMarker.png';
@@ -31,8 +33,6 @@ import {
   AddressText,
   SecondaryAddressText,
   ComplementContainer,
-  TextInputContainer,
-  Label,
 } from './styles';
 import Button from '~/components/Button';
 import UnderlineInput from '~/components/UnderlineInput';
@@ -46,11 +46,12 @@ interface AddressFormData {
 }
 
 const RegisterAddress: React.FC = () => {
-  const navigation = useNavigation();
   const [streetNumber, setStreetNumber] = useState('');
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const formRef = useRef<FormHandles>(null);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const { user } = useAuth();
 
   const { newDeliveryAddress } = useSelector<
     ApplicationState,
@@ -62,14 +63,12 @@ const RegisterAddress: React.FC = () => {
       'keyboardDidShow',
       e => {
         setKeyboardVisible(true);
-        setKeyboardHeight(e.endCoordinates.height);
       },
     );
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
         setKeyboardVisible(false);
-        setKeyboardHeight(0);
       },
     );
     return () => {
@@ -87,7 +86,6 @@ const RegisterAddress: React.FC = () => {
     async (data: AddressFormData) => {
       try {
         formRef.current?.setErrors({});
-        console.log(data);
         const schema = Yup.object().shape({
           number: Yup.string().required('Campo obrigatório'),
           referencePoint: Yup.string().required('Campo obrigatório'),
@@ -96,23 +94,21 @@ const RegisterAddress: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
-        console.log(data);
-        console.log(newDeliveryAddress);
-        /*
-      const response = await api.post<Response>('users', {
-        name: fullName,
-        birthDate: birthDateEdited,
-        email,
-        phoneNumber: phoneNumberRawValue,
-        facebookLogin: !!facebookUser,
-      });
-      const { token } = response.data;
-      if (token && !!facebookUser) {
-        signInFacebookUser();
-      } else {
-        await signInWithCustomToken({ token });
-      }
-      */
+
+        dispatch(
+          deliveryAddressActions.createDeliveryAddress({
+            ...newDeliveryAddress,
+            streetNumber: data.number,
+            referencePoint: data.referencePoint,
+            userId: user?.id,
+          }),
+        );
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: 'Home' }],
+          }),
+        );
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -120,7 +116,7 @@ const RegisterAddress: React.FC = () => {
         }
       }
     },
-    [newDeliveryAddress],
+    [dispatch, navigation, newDeliveryAddress, user],
   );
 
   const handleGoBack = useCallback(() => {
@@ -130,7 +126,6 @@ const RegisterAddress: React.FC = () => {
   const handleChangeNumber = useCallback(value => {
     setStreetNumber(value);
   }, []);
-  const mapHeight = Dimensions.get('window').height;
 
   return (
     <Container>
@@ -148,8 +143,8 @@ const RegisterAddress: React.FC = () => {
         scrollEnabled={false}
         provider={PROVIDER_GOOGLE}
         initialRegion={{
-          latitude: newDeliveryAddress.location.latitude,
-          longitude: newDeliveryAddress.location.longitude,
+          latitude: newDeliveryAddress?.location.latitude,
+          longitude: newDeliveryAddress?.location.longitude,
           latitudeDelta: 0.001,
           longitudeDelta: 0.001,
         }}

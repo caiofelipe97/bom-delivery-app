@@ -1,5 +1,7 @@
 import { createStore, applyMiddleware, Store } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import { persistStore } from 'redux-persist';
+
 import { DeliveryAddressState } from './ducks/deliveryAddress/types';
 import { LoadingState } from './ducks/loading/types';
 import { RestaurantsState } from './ducks/restaurants/types';
@@ -20,6 +22,8 @@ const store: Store<ApplicationState> = createStore(
   applyMiddleware(sagaMiddleware),
 );
 
+const persistor = persistStore(store);
+
 sagaMiddleware.run(rootSaga);
 
-export default store;
+export { store, persistor };
